@@ -1,0 +1,247 @@
+import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'auth.dart';
+import 'auth_provider.dart';
+import 'package:toast/toast.dart';
+class LoginPage extends StatefulWidget{
+  const LoginPage({this.onSignedIn});
+  final VoidCallback onSignedIn;
+  @override
+  State<StatefulWidget> createState() =>new _LoginPageState();
+  }
+  
+  enum FormType{
+    login,
+    register
+  }
+  
+  class _LoginPageState extends State<LoginPage>
+  {
+    String _email ,_password,_name,_mobile,_address;
+    final formKey=new GlobalKey<FormState>();
+    FormType _formType=FormType.login;
+  
+    @override
+    Widget build(BuildContext context) {
+      // TODO: implement build
+      return new Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: SingleChildScrollView (child: Stack(
+          children: <Widget>[
+              new Container(padding:EdgeInsets.all(5.0),
+          child: new Form(
+            key: formKey,
+            child: new Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              
+              children: logo()+buidInputs()+buildSubmitButtons(),
+                                            ),
+                                          ),
+                                        ),
+          ],
+        ),)
+                                      );
+                                    }
+                  List<Widget> buidInputs(){
+                    if(_formType==FormType.login)
+                  {
+                    return [Padding(
+                  padding: const EdgeInsets.all(10),
+                  child:new TextFormField(
+                  decoration: new InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Enter Email', 
+                  ),
+                  validator: (value)=>value.isEmpty?"Email can't be Empty":null ,
+                  onSaved: (value)=>_email=value,
+                ),
+                
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child:new TextFormField(
+                  decoration: new InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Password',
+                     
+                  ),
+                  validator: (value)=>value.isEmpty?"Password can't be Empty":null ,
+                  obscureText: true,
+                  onSaved: (value)=>_password=value,
+                ),
+                
+                ),
+                ];
+                  }else{
+                    return [
+                      Padding(
+                  padding: const EdgeInsets.all(10),
+                  child:new TextFormField(
+                  decoration: new InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Enter Name', 
+                  ),
+                  validator: (value)=>value.isEmpty?"Name can't be Empty":null ,
+                  onSaved: (value)=>_name=value,
+                ),
+                
+                ),
+                      Padding(
+                  padding: const EdgeInsets.all(10),
+                  child:new TextFormField(
+                  decoration: new InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Enter Email', 
+                  ),
+                  validator: (value)=>value.isEmpty?"Email can't be Empty":null ,
+                  onSaved: (value)=>_email=value,
+                ),
+                
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child:new TextFormField(
+                  decoration: new InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Enter Mobile Number', 
+                  ),
+                  validator: (value)=>value.isEmpty?"Mobile can't be Empty":null ,
+                  onSaved: (value)=>_mobile=value,
+                ),
+                
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child:new TextFormField(
+                  decoration: new InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Enter Address', 
+                  ),
+                  validator: (value)=>value.isEmpty?"Address can't be Empty":null ,
+                  onSaved: (value)=>_address=value,
+                ),
+                
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child:new TextFormField(
+                  decoration: new InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Password', 
+                  ),
+                  validator: (value)=>value.isEmpty?"Password can't be Empty":null ,
+                  obscureText: true,
+                  onSaved: (value)=>_password=value,
+                ),
+                
+                ),
+                ];
+                  }
+                  }
+  
+                List<Widget> buildSubmitButtons(){
+                  if(_formType==FormType.login)
+                  {
+                      return [SizedBox(
+                  width: 150,
+                  height: 45,
+                  child:RaisedButton (               
+                  shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
+                  child: new Text("Login",
+                  style: new TextStyle(fontSize: 20.0,color: Colors.black,)),
+                  color: Theme.of(context).accentColor,
+                  elevation: 4.0,   
+                  splashColor: Colors.blueGrey,
+                  onPressed: validateAndSubmit,
+                                ),
+                
+                                ),
+                  new FlatButton(
+                  child: new Text('Create an account',style: new TextStyle(fontSize: 14.0),),
+                  onPressed: moveToRegister,
+                                )];
+                  }else{
+                    return [SizedBox(
+                  width: 150,
+                  height: 45,
+                  child:RaisedButton (               
+                  shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
+                  child: new Text("Register",
+                  style: new TextStyle(fontSize: 20.0,color: Colors.black,)),
+                  color: Theme.of(context).accentColor,
+                  elevation: 4.0,   
+                  splashColor: Colors.blueGrey,
+                  onPressed: validateAndSubmit,
+                                ),
+                
+                                ),
+                  new FlatButton(
+                  child: new Text('Have an Account ? Login',style: new TextStyle(fontSize: 14.0),),
+                  onPressed: moveToLogin,
+                                                )];
+                                  }
+                                  
+                                }
+                                                  
+                                bool validateAndSave() {
+                                  final form =formKey.currentState;
+                                  if(form.validate()){
+                                    form.save();
+                                    return true;
+                                  }else{
+                                    return false;
+                                  }
+                                                      
+                                    }
+                                  
+                                    Future<FirebaseUser> validateAndSubmit() async {
+                                      if(validateAndSave()){
+                                        try{
+                                          final BaseAuth auth = AuthProvider.of(context).auth;
+                                          if(_formType==FormType.login){
+                                             final String userId = await auth.signInWithEmailAndPassword(_email, _password);
+                                            
+                                            //Toast.show("Registrasion Successfull"+userId, context, duration: Toast.LENGTH_SHORT, gravity:  Toast.BOTTOM);
+                                          }else{
+                                             await auth.createUserWithEmailAndPassword(_name,_email, _password,_mobile,_address);
+                                            Toast.show("Registrasion Successfull", context, duration: 1, gravity:  Toast.BOTTOM);
+                                            
+                                          }
+                                          widget.onSignedIn();
+                                     
+                                      }catch(e){
+                                        Toast.show("Fail\n"+e.toString(), context, duration: 4, gravity:  Toast.BOTTOM,backgroundColor: Colors.red);
+                                      }
+                                    }
+                                  }
+                                
+                                
+                                
+                  void moveToRegister() {
+                    formKey.currentState.reset();
+                    setState(() {
+                      _formType=FormType.register;
+                    });
+                                      
+                                    
+                  }
+                
+                  void moveToLogin() {
+                    formKey.currentState.reset();
+                    setState(() {                      
+                    _formType=FormType.login;
+                  });
+  }
+
+  
+                   List<Widget> logo() {
+                     AssetImage assetImage=AssetImage('images/logo1.png');
+                     Image image=Image(image:assetImage,width: 150,height: 150);
+                 return[                  
+                    image
+                   ];
+               }
+                 
+  
+}
