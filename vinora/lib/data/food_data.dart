@@ -2,19 +2,19 @@ import '../models/food_model.dart';
 import 'package:firebase_database/firebase_database.dart';
 final foods = [Food()];
 int count=0;
-   class Load{
-     Load()
+   
+     Future<void> Load() async
      {
      count++;
      if(count==1){
        foods.removeAt(0);
-       final db = FirebaseDatabase.instance.reference().child("Category");
+       final db = await FirebaseDatabase.instance.reference().child("Category");
       db.once().then((DataSnapshot snapshot){
       Map<dynamic, dynamic> values = snapshot.value;
       values.forEach((key,values) {
        foods.add(
          Food(
-            id: "1",
+            id: values["id"],
             name: values["Name"],
             imagePath: values["Image"],
             category: "1",
@@ -29,5 +29,4 @@ int count=0;
      }
      } 
  
-  }
 

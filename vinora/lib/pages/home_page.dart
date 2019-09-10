@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../widgets/bought_foods.dart';
-import '../widgets/home_top_info.dart';
 import '../widgets/food_category.dart';
 import '../widgets/search_file.dart';
+import '../pages/category_page.dart';
 
 // Data
 import '../data/food_data.dart';
@@ -20,13 +20,14 @@ class _HomePageState extends State<HomePage>{
   
   List<Food> _foods = foods;
   
-
+  
   @override
   Widget build(BuildContext context){
     return Scaffold(
       body: ListView(
         padding: EdgeInsets.only(top: 50.0, left: 20.0, right: 20.0),
         children: <Widget>[
+          
           FoodCategory(),
           SizedBox(height: 20.0,),
           SearchField(),
@@ -35,6 +36,7 @@ class _HomePageState extends State<HomePage>{
           SizedBox(height: 20.0),
           Column(
             children: _foods.map(_buildFoodItems).toList(),
+            
           ),
         ],
       ),
@@ -42,8 +44,15 @@ class _HomePageState extends State<HomePage>{
   }
 
     Widget _buildFoodItems(Food food){
-    return Container(
-        margin: EdgeInsets.only(bottom: 20.0),
+    return GestureDetector(
+      onTap: (){
+         var route = new MaterialPageRoute(
+                  builder: (BuildContext context) =>
+                      new Category(value: food.id,),
+                );
+                Navigator.of(context).push(route);
+      },
+      child: Container(
         child: BoughtFood(
           id: food.id,
           name: food.name,
@@ -51,8 +60,10 @@ class _HomePageState extends State<HomePage>{
           category: food.category,
           discount: food.discount,
           price: food.price,
-          ratings: food.ratings,
+          
         ),
+      ),
+        
       );
   }
 

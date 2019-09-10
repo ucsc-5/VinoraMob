@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'auth.dart';
 import 'auth_provider.dart';
 import 'package:toast/toast.dart';
+import 'package:connectivity/connectivity.dart';
 class LoginPage extends StatefulWidget{
   const LoginPage({this.onSignedIn});
   final VoidCallback onSignedIn;
@@ -25,17 +26,18 @@ class LoginPage extends StatefulWidget{
     Widget build(BuildContext context) {
       // TODO: implement build
       return new Scaffold(
+        
         resizeToAvoidBottomInset: false,
-        body: SingleChildScrollView (child: Stack(
+        body: SingleChildScrollView ( child: Stack(
           children: <Widget>[
-              new Container(padding:EdgeInsets.all(5.0),
+            new Container(padding:EdgeInsets.all(11.0),
           child: new Form(
             key: formKey,
             child: new Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               
-              children: logo()+buidInputs()+buildSubmitButtons(),
+              children:logo()+slogan()+buidInputs()+buildSubmitButtons(),
                                             ),
                                           ),
                                         ),
@@ -196,13 +198,14 @@ class LoginPage extends StatefulWidget{
                                     }
                                   
                                     Future<FirebaseUser> validateAndSubmit() async {
+                                      var connectivityResult = await (Connectivity().checkConnectivity());
+                                      
                                       if(validateAndSave()){
-                                        try{
+                                        if (connectivityResult == ConnectivityResult.mobile||connectivityResult == ConnectivityResult.wifi) {
+                                          try{
                                           final BaseAuth auth = AuthProvider.of(context).auth;
                                           if(_formType==FormType.login){
                                              final String userId = await auth.signInWithEmailAndPassword(_email, _password);
-                                            
-                                            //Toast.show("Registrasion Successfull"+userId, context, duration: Toast.LENGTH_SHORT, gravity:  Toast.BOTTOM);
                                           }else{
                                              await auth.createUserWithEmailAndPassword(_name,_email, _password,_mobile,_address);
                                             Toast.show("Registrasion Successfull", context, duration: 1, gravity:  Toast.BOTTOM);
@@ -213,6 +216,10 @@ class LoginPage extends StatefulWidget{
                                       }catch(e){
                                         Toast.show("Fail\n"+e.toString(), context, duration: 4, gravity:  Toast.BOTTOM,backgroundColor: Colors.red);
                                       }
+                                      } else{
+                                        Toast.show("Please Check The Internet Connection", context, duration: 4, gravity:  Toast.BOTTOM,backgroundColor: Colors.red);
+                                      }
+                                        
                                     }
                                   }
                                 
@@ -241,6 +248,12 @@ class LoginPage extends StatefulWidget{
                  return[                  
                     image
                    ];
+               }
+
+               List<Widget> slogan() {
+                     return[
+                       Text("The Next Level Of Ordering ...",textScaleFactor: 1.2, style: new TextStyle(fontWeight: FontWeight.bold,),)
+                     ];
                }
                  
   

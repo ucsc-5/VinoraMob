@@ -1,27 +1,28 @@
 import 'package:flutter/material.dart';
 
-class BoughtFood extends StatefulWidget {
+class BoughtCategory extends StatefulWidget {
   final String id;
   final String name;
   final String imagePath;
   final String category;
-  final double price;
-  final double discount;
+  final String price;
+  final String discount;
+  final String discription;
 
-  BoughtFood(
+  BoughtCategory(
       {this.id,
       this.name,
       this.imagePath,
       this.category,
       this.price,
       this.discount,
-      });
+      this.discription});
 
   @override
-  _BoughtFoodState createState() => _BoughtFoodState();
+  _BoughtCategoryState createState() => _BoughtCategoryState();
 }
 
-class _BoughtFoodState extends State<BoughtFood> {
+class _BoughtCategoryState extends State<BoughtCategory> {
   var cardText = TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold);
 
   @override

@@ -7,7 +7,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:toast/toast.dart';
 import 'companies/RoyalVintage.dart';
 import 'data/food_data.dart';
-String id="null",name="null",email="null",firstLetter="Nu";
+String id="null",name="Loding..",email="Loding..",firstLetter="L";
 
 class HomePage extends StatelessWidget {
   const HomePage(

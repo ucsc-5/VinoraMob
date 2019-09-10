@@ -43,7 +43,6 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Load();
     return Scaffold(
       appBar: AppBar(
                 title: Text('Royal Vintage'),
