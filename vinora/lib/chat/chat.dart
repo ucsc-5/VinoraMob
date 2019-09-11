@@ -77,6 +77,7 @@ class _ChatState extends State<Chat> {
               ),
             ),
             Container(
+              padding: EdgeInsets.all(10.0),
               child: Row(
                 children: <Widget>[
                   Expanded(
