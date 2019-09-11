@@ -4,6 +4,8 @@ import 'auth.dart';
 import 'auth_provider.dart';
 import 'package:toast/toast.dart';
 import 'package:connectivity/connectivity.dart';
+import 'data/food_data.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 class LoginPage extends StatefulWidget{
   const LoginPage({this.onSignedIn});
   final VoidCallback onSignedIn;
@@ -21,7 +23,8 @@ class LoginPage extends StatefulWidget{
     String _email ,_password,_name,_mobile,_address;
     final formKey=new GlobalKey<FormState>();
     FormType _formType=FormType.login;
-  
+    ProgressDialog pr;
+    
     @override
     Widget build(BuildContext context) {
       // TODO: implement build
@@ -205,9 +208,19 @@ class LoginPage extends StatefulWidget{
                                           try{
                                           final BaseAuth auth = AuthProvider.of(context).auth;
                                           if(_formType==FormType.login){
+                                            pr = new ProgressDialog(context,ProgressDialogType.Normal);
+                                            pr.setMessage('Please wait...');
+                                            pr.show();
                                              final String userId = await auth.signInWithEmailAndPassword(_email, _password);
+                                             pr.hide();
+                                             Load();
                                           }else{
+                                            pr = new ProgressDialog(context,ProgressDialogType.Normal);
+                                            pr.setMessage('Please wait...');
+                                            pr.show();
                                              await auth.createUserWithEmailAndPassword(_name,_email, _password,_mobile,_address);
+                                             pr.hide();
+                                             Load();
                                             Toast.show("Registrasion Successfull", context, duration: 1, gravity:  Toast.BOTTOM);
                                             
                                           }

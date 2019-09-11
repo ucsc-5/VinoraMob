@@ -2,7 +2,6 @@ import '../models/food_model.dart';
 import 'package:firebase_database/firebase_database.dart';
 final foods = [Food()];
 int count=0;
-   
      Future<void> Load() async
      {
      count++;
@@ -28,5 +27,5 @@ int count=0;
  });
      }
      } 
- 
+
 

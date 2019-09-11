@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:vinora/chat/chat.dart';
 import '../pages/home_page.dart';
 import '../pages/order_page.dart';
 import '../pages/favorite_page.dart';
 import '../pages/profile_page.dart';
 import '../data/food_data.dart';
+import '../global.dart' as globals;
 class MainScreen extends StatefulWidget {
   
   
@@ -37,8 +39,10 @@ class _MainScreenState extends State<MainScreen> {
     pages = [homePage, orderPage, favoritePage, profilePage];
 
     currentPage = homePage;
-    Load();
+    
     super.initState();
+    Load();
+
   }
 
   @override
@@ -89,7 +93,16 @@ class _MainScreenState extends State<MainScreen> {
       body: currentPage,
       floatingActionButton: FloatingActionButton (
                                     child: Icon(Icons.chat),
-                                    onPressed: (){},
+                                    onPressed: (){
+                                      Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Chat(
+          user: globals.Test.globalUser,
+        ),
+      ),
+    );
+                                    },
                                   ),
     );
   }
