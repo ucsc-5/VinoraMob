@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:vinora/widgets/food_card.dart';
 import 'auth.dart';
 import 'auth_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:toast/toast.dart';
 import 'companies/RoyalVintage.dart';
-import 'data/food_data.dart';
 String id="null",name="Loding..",email="Loding..",firstLetter="L";
 
 class HomePage extends StatelessWidget {
@@ -41,8 +38,7 @@ class HomePage extends StatelessWidget {
   }
   @override
   Widget build(BuildContext context) {
-    getUserId();
-    
+    getUserId(); 
             return Scaffold(
               appBar: AppBar(
                 title: Text('Vinora'),
@@ -172,11 +168,6 @@ class HomePage extends StatelessWidget {
                                         );
                                       }
                                     
-                                      Image logo() {
-                                        AssetImage assetImage=AssetImage('images/logo1.png');
-                                     Image image=Image(image:assetImage,width: 150,height: 150);
-                                 return  image;
-                                  
-                                      }
+                                      
 
 }

@@ -6,6 +6,7 @@ import 'package:toast/toast.dart';
 import 'package:connectivity/connectivity.dart';
 import 'data/food_data.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import 'data/food_data.dart';
 class LoginPage extends StatefulWidget{
   const LoginPage({this.onSignedIn});
   final VoidCallback onSignedIn;
@@ -27,6 +28,7 @@ class LoginPage extends StatefulWidget{
     
     @override
     Widget build(BuildContext context) {
+      Load();
       // TODO: implement build
       return new Scaffold(
         
@@ -205,13 +207,14 @@ class LoginPage extends StatefulWidget{
                                       
                                       if(validateAndSave()){
                                         if (connectivityResult == ConnectivityResult.mobile||connectivityResult == ConnectivityResult.wifi) {
+                                            pr = new ProgressDialog(context,ProgressDialogType.Normal);
                                           try{
                                           final BaseAuth auth = AuthProvider.of(context).auth;
                                           if(_formType==FormType.login){
-                                            pr = new ProgressDialog(context,ProgressDialogType.Normal);
+                                            
                                             pr.setMessage('Please wait...');
                                             pr.show();
-                                             final String userId = await auth.signInWithEmailAndPassword(_email, _password);
+                                             await auth.signInWithEmailAndPassword(_email, _password);
                                              pr.hide();
                                              Load();
                                           }else{
@@ -227,10 +230,13 @@ class LoginPage extends StatefulWidget{
                                           widget.onSignedIn();
                                      
                                       }catch(e){
+                                        pr.hide();
                                         Toast.show("Fail\n"+e.toString(), context, duration: 4, gravity:  Toast.BOTTOM,backgroundColor: Colors.red);
                                       }
                                       } else{
+                                        
                                         Toast.show("Please Check The Internet Connection", context, duration: 4, gravity:  Toast.BOTTOM,backgroundColor: Colors.red);
+                                        
                                       }
                                         
                                     }

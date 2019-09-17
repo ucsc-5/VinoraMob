@@ -1,11 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:vinora/auth_provider.dart';
 import 'package:vinora/chat/chat.dart';
+import 'package:vinora/map/location.dart';
 import '../pages/home_page.dart';
 import '../pages/order_page.dart';
 import '../pages/favorite_page.dart';
 import '../pages/profile_page.dart';
 import '../data/food_data.dart';
-import '../global.dart' as globals;
+import '../auth.dart';
 class MainScreen extends StatefulWidget {
   
   
@@ -47,6 +50,9 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final BaseAuth auth = AuthProvider.of(context).auth;
+    final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+    
     return Scaffold(
       appBar: AppBar(
                 title: Text('Royal Vintage'),
@@ -91,15 +97,15 @@ class _MainScreenState extends State<MainScreen> {
         ],
       ),
       body: currentPage,
+      
       floatingActionButton: FloatingActionButton (
-                                    child: Icon(Icons.chat),
+                          
+                                    child: Icon(currentPage!=pages[1]? Icons.chat:Icons.map),
                                     onPressed: (){
                                       Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => Chat(
-          user: globals.Test.globalUser,
-        ),
+        builder: (context) =>currentPage!=pages[1]? Chat():Location()
       ),
     );
                                     },

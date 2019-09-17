@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import './global.dart' as globals;
 abstract class BaseAuth {
   
   Future<String> signInWithEmailAndPassword(String email, String password);
@@ -9,6 +8,7 @@ abstract class BaseAuth {
   Future<String> currentUser();
   Future<void> signOut();
   Future<void> loadFood();
+  Future currentUserDetails();
 }
 
 class Auth implements BaseAuth {
@@ -18,7 +18,7 @@ class Auth implements BaseAuth {
   Future<String> signInWithEmailAndPassword(String email, String password) async {    
     AuthResult result= await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
     final FirebaseUser user =result.user;
-    globals.Test.globalUser=user;
+    
     return user.uid;
   }
 
@@ -27,7 +27,7 @@ class Auth implements BaseAuth {
     
       AuthResult result= await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
     final FirebaseUser user =result.user;
-    globals.Test.globalUser=user;
+    
     databaseReference.child("User/"+user.uid).set({
     'name': name,
     'email':email,
@@ -54,5 +54,11 @@ class Auth implements BaseAuth {
   Future<void> loadFood() async{
     
     return null;
+  }
+
+  @override
+  Future<FirebaseUser> currentUserDetails() async {
+    FirebaseUser user = await _firebaseAuth.currentUser();
+    return user != null ? user : null;
   }
 }

@@ -1,7 +1,7 @@
 import 'package:vinora/models/category_mode1l.dart';
 import 'package:firebase_database/firebase_database.dart';
 final category = [Category1(
-  id: "values[]",
+            id: "1",
             name: "Cup Masoor Parippu",
             imagePath: "https://cpimg.tistatic.com/04697293/b/4/Lal-Masoor-Dal.jpg",
             category: "1",
@@ -14,10 +14,9 @@ int count=0;
    class Load1{
       Load1(String value) 
      {
-      category.removeAt(0);
      count++;
-     
-     if(count==1){
+     if(count==1&&value=="01"){
+       category.removeAt(0);
        final db1 = FirebaseDatabase.instance.reference().child("Food"); 
       db1.once().then((DataSnapshot snapshot){
       Map<dynamic, dynamic> values = snapshot.value;
@@ -34,12 +33,32 @@ int count=0;
             discription: values["Discription"].toString(),
          )
        );
+        }else{
+          Category1(
+            id: "1",
+            name: "No Items",
+            imagePath: "No",
+            category: "1",
+            price:  "No",
+            discount: "0",
+            discription:"0",
+         );
         }
         
        
       
     });
  });
+     }else{
+        Category1(
+            id: "1",
+            name: "No Items",
+            imagePath: "No",
+            category: "1",
+            price:  "No",
+            discount: "0",
+            discription:"0",
+         );
      }
      } 
  
