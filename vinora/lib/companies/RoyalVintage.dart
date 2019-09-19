@@ -105,7 +105,7 @@ class _MainScreenState extends State<MainScreen> {
                                       Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>currentPage!=pages[1]? Chat():Location()
+        builder: (context) =>currentPage!=pages[1]? Chat():GetUserLocation()
       ),
     );
                                     },
