@@ -309,7 +309,7 @@ class _MapState extends State<Map> {
         double distance1 = await (Geolocator().distanceBetween(a, b, c, d))/1000;
         setState(() {
          distance=distance1; 
-         Toast.show("get Distance called${distance1.toString()}", context, duration: 1, gravity:  Toast.CENTER);
+         //Toast.show("get Distance called${distance1.toString()}", context, duration: 1, gravity:  Toast.CENTER);
         });
         
     
