@@ -5,6 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:toast/toast.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:vinora/home_page.dart';
 import 'package:vinora/requests/google_map_requests.dart';
 class GetUserLocation extends StatefulWidget {
   @override
@@ -40,15 +41,29 @@ class _MapState extends State<Map> {
   final Set<Polyline> _polyLines={};
   double distance=0;
   String destinationPoint=null;
+  LatLng preLocation;
+  double speed=0;
   @override
   void initState() {
     
     super.initState();
     _getUserLocation();
       }
-    
+    @override
+  void setState(fn) {
+    if(_initialPosition!=null&&preLocation!=null){
+      _markers.remove(preLocation.toString()); 
+    _markers.add(Marker(
+        markerId: MarkerId(_initialPosition.toString()),
+        position: _initialPosition,
+        
+        icon: BitmapDescriptor.defaultMarker));
+    }
+    super.setState(fn);
+  }
       @override
       Widget build(BuildContext context) {
+
         return  _initialPosition==null?Container(
           alignment: Alignment.center,
           child: Center(
@@ -59,8 +74,12 @@ class _MapState extends State<Map> {
               GoogleMap(
                 initialCameraPosition: CameraPosition(
                   target: _initialPosition,
-                  zoom: 10.0
+                  zoom: 10.0,
+                  
+                  
                 ),
+                
+                
                 onMapCreated: onCreated,
                 myLocationButtonEnabled: true,
                 mapType: MapType.normal,
@@ -68,8 +87,10 @@ class _MapState extends State<Map> {
                 markers: _markers,
                 onCameraMove: _onCameraMove,
                 polylines: _polyLines,
-                                      ),
-                                    
+                
+
+                ),
+       
                                       Positioned(
                     top: 50.0,
                     right: 15.0,
@@ -154,7 +175,7 @@ class _MapState extends State<Map> {
                   ),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Align(alignment: Alignment.bottomCenter,child: Text("Distance : "+distance.toStringAsFixed(3)+" km",
+                    child: Align(alignment: Alignment.bottomCenter,child: Text("Distance : "+distance.toStringAsFixed(3)+" km "+"Speed :"+speed.toStringAsFixed(3)+" km/s",
                     style:TextStyle(fontWeight: FontWeight.bold),
                     overflow: TextOverflow.ellipsis,),),
                   ),
@@ -256,12 +277,15 @@ class _MapState extends State<Map> {
       void _getUserLocation() async {
         Position position=await Geolocator().getCurrentPosition(desiredAccuracy: prefix0.LocationAccuracy.high);
         _initialPosition=LatLng(position.latitude,position.longitude);
+        preLocation=_initialPosition;
         setState(() {
           var location=new Location();
         location.onLocationChanged().listen((LocationData currentLocation) async{
         List<Placemark> placemark = await Geolocator().placemarkFromCoordinates(currentLocation.latitude,currentLocation.longitude );
         _initialPosition=LatLng(currentLocation.latitude,currentLocation.longitude);
          locationController.text=placemark[0].name;
+         speed=(currentLocation.speed)/1000;
+         preLocation=_initialPosition;
          //Toast.show("abc", context, duration: 1, gravity:  Toast.BOTTOM);
          if(destinationPoint!=null){
            List<Placemark> placemark1 =await Geolocator().placemarkFromAddress(destinationPoint);

@@ -39,6 +39,7 @@ dependencies:
   geocoder: ^0.2.1
   intl_translation: ^0.17.7
   google_maps_webservice: ^0.0.14
+  flutter_launcher_icons: ^0.7.3
   flutter_google_places: ^0.2.3
   flutter_spinkit: ^4.0.0
   geoflutterfire: ^2.0.3+5
@@ -51,7 +52,10 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-
+flutter_icons:
+  android: "launcher_icon" 
+  ios: true
+  image_path: "images/logo1.png"
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
