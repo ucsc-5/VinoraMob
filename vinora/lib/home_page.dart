@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'companies/RoyalVintage.dart';
 String id="null",name="Loding..",email="Loding..",firstLetter="L";
-
+String url="https://pixel.nymag.com/imgs/daily/vulture/2017/06/14/14-tom-cruise.w700.h700.jpg";
 class HomePage extends StatelessWidget {
   const HomePage(
     {
@@ -23,6 +23,21 @@ class HomePage extends StatelessWidget {
     }
   }
   
+  Future<String> currentUser() async {
+    final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+    FirebaseUser user = await _firebaseAuth.currentUser();
+    final db1 = FirebaseDatabase.instance.reference().child("User/${user.uid}");
+        db1.once().then((DataSnapshot snapshot){
+          
+            url=snapshot.value['image'];
+          
+        
+      }).catchError((e){
+                                  print(e);
+                                });
+      return user != null ? user.uid : null;
+  }
+  
   Future<String> getUserId() async{
     final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
     final databaseReference = FirebaseDatabase.instance.reference();
@@ -36,8 +51,10 @@ class HomePage extends StatelessWidget {
     
     return user != null ? user.uid : null;
   }
+  
   @override
   Widget build(BuildContext context) {
+    currentUser();
     getUserId(); 
             return Scaffold(
               appBar: AppBar(
@@ -121,13 +138,22 @@ class HomePage extends StatelessWidget {
                                               UserAccountsDrawerHeader(
                                             accountName: Text(name),
                                             accountEmail: Text(email),
-                                            currentAccountPicture: CircleAvatar(
-                                            backgroundColor: Colors.white,
-                                            child: Text(firstLetter,style: TextStyle(
-                                              fontSize:36,
-                                              
-                                               ),),
-                                            ),
+                                            currentAccountPicture: Container(
+                      alignment: Alignment.center,
+                        width: 150.0,
+                        height: 150.0, 
+                        decoration: BoxDecoration(
+                            color: Colors.red,
+                            image: DecorationImage(
+                              alignment: Alignment.center,
+                                image: NetworkImage(
+                                  
+                                    url),
+                                fit: BoxFit.cover),
+                            borderRadius: BorderRadius.all(Radius.circular(85.0)),
+                            boxShadow: [
+                              BoxShadow(blurRadius: 7.0, color: Colors.black)
+                            ])),
                                             ),
                                             ListTile(
                                               title: Text("My Profile"),
