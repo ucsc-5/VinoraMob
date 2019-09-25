@@ -32,7 +32,8 @@ class Auth implements BaseAuth {
     'name': name,
     'email':email,
     'address':address,
-    'mobile':mobile
+    'mobile':mobile,
+    'image':"https://pixel.nymag.com/imgs/daily/vulture/2017/06/14/14-tom-cruise.w700.h700.jpg"
   });
     return user.uid;
     

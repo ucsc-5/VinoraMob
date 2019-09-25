@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'dart:io';
   FirebaseUser user;
   FirebaseAuth auth;
 class Chat extends StatefulWidget {
@@ -12,10 +15,20 @@ class Chat extends StatefulWidget {
 }
 
 class _ChatState extends State<Chat> {
+  final FirebaseMessaging _fcm = FirebaseMessaging();
+  StreamSubscription iosSubscription;
   @override
   void initState() {
     
+    
     super.initState();
+    if (Platform.isIOS) {
+            iosSubscription = _fcm.onIosSettingsRegistered.listen((data) {
+                // save the token  OR subscribe to a topic here
+            });
+
+            _fcm.requestNotificationPermissions(IosNotificationSettings());
+        }
     auth = FirebaseAuth.instance;
   getCurrentUser();
     }

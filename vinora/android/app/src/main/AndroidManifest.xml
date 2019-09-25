@@ -8,7 +8,7 @@
         android:label="vinora"
         android:icon="@mipmap/launcher_icon"
         >
-        <meta-data android:name="com.google.android.geo.API_KEY" android:value=""/>
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyBhDflq5iJrXIcKpeq0IzLQPQpOboX91lY"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
@@ -29,6 +29,10 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="FLUTTER_NOTIFICATION_CLICK" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         
