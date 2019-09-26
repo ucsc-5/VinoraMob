@@ -15,7 +15,7 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   ProgressDialog pr;
-  var ImageUrl="https://pixel.nymag.com/imgs/daily/vulture/2017/06/14/14-tom-cruise.w700.h700.jpg";
+  var imageUrl="https://pixel.nymag.com/imgs/daily/vulture/2017/06/14/14-tom-cruise.w700.h700.jpg";
   File newProfilePic;
   final db=FirebaseDatabase.instance.reference();
   String name="Name Loading ...";
@@ -59,7 +59,7 @@ class _ProfileState extends State<Profile> {
       db1.once().then((DataSnapshot snapshot){
         setState(() {
           isLoading=false;
-          ImageUrl=snapshot.value['image'];
+          imageUrl=snapshot.value['image'];
         });
         
       }).catchError((e){
@@ -84,7 +84,7 @@ class _ProfileState extends State<Profile> {
         db1.once().then((DataSnapshot snapshot){
           setState(() {
             name=snapshot.value['name'];
-            ImageUrl=snapshot.value['image'];
+            imageUrl=snapshot.value['image'];
           });
         
       }).catchError((e){
@@ -118,7 +118,7 @@ class _ProfileState extends State<Profile> {
                               alignment: Alignment.center,
                                 image: NetworkImage(
                                   
-                                    ImageUrl),
+                                    imageUrl),
                                 fit: BoxFit.cover),
                             borderRadius: BorderRadius.all(Radius.circular(75.0)),
                             boxShadow: [
