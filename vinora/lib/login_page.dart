@@ -25,10 +25,16 @@ class LoginPage extends StatefulWidget{
     final formKey=new GlobalKey<FormState>();
     FormType _formType=FormType.login;
     ProgressDialog pr;
-    
+    @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Load();
+  }
+  
     @override
     Widget build(BuildContext context) {
-      Load();
+      
       // TODO: implement build
       return new Scaffold(
         
