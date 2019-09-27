@@ -27,7 +27,7 @@ class _MainScreenState extends State<MainScreen> {
   HomePage homePage;
   OrderPage orderPage;
   FavoritePage favoritePage;
-  ProfilePage profilePage;
+  Profile profilePage;
 
   List<Widget> pages;
   Widget currentPage;
@@ -38,7 +38,7 @@ class _MainScreenState extends State<MainScreen> {
     homePage = HomePage();
     orderPage = OrderPage();
     favoritePage = FavoritePage();
-    profilePage = ProfilePage();
+    profilePage = Profile();
     pages = [homePage, orderPage, favoritePage, profilePage];
 
     currentPage = homePage;
