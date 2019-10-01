@@ -19,19 +19,22 @@ class LoginPage extends StatefulWidget{
     register
   }
   
-  class _LoginPageState extends State<LoginPage>
+  class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixin
   {
     String _email ,_password,_name,_mobile,_address;
     final formKey=new GlobalKey<FormState>();
     FormType _formType=FormType.login;
     ProgressDialog pr;
+  
     @override
   void initState() {
     // TODO: implement initState
     super.initState();
+   
     Load();
   }
-  
+  String _resetEmail=null;
+   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
     @override
     Widget build(BuildContext context) {
       
@@ -48,297 +51,369 @@ class LoginPage extends StatefulWidget{
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               
-              children:logo()+slogan()+buidInputs()+buildSubmitButtons(),
-                                            ),
-                                          ),
-                                        ),
-          ],
-        ),)
-                                      );
-                                    }
-                  List<Widget> buidInputs(){
-                    if(_formType==FormType.login)
-                  {
-                    return [Padding(
-                  padding: const EdgeInsets.all(10),
-                  child:new TextFormField(
-                  decoration: new InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Enter Email', 
-                  ),
-                  validator: (value)=>value.isEmpty?"Email can't be Empty":null ,
-                  onSaved: (value)=>_email=value,
-                ),
-                
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child:new TextFormField(
-                  decoration: new InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Password',
-                     
-                  ),
-                  validator: (value)=>value.isEmpty?"Password can't be Empty":null ,
-                  obscureText: true,
-                  onSaved: (value)=>_password=value,
-                ),
-                
-                ),
-                ];
-                  }else{
-                    return [
-                      Padding(
-                  padding: const EdgeInsets.all(10),
-                  child:new TextFormField(
-                  decoration: new InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Enter Name', 
-                  ),
-                  validator: (value)=>value.isEmpty?"Name can't be Empty":null ,
-                  onSaved: (value)=>_name=value,
-                ),
-                
-                ),
-                      Padding(
-                  padding: const EdgeInsets.all(10),
-                  child:new TextFormField(
-                  decoration: new InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Enter Email', 
-                  ),
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (value)=>value.isEmpty?"Email can't be Empty":null ,
-                  onSaved: (value)=>_email=value,
-                ),
-                
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child:new TextFormField(
-                  decoration: new InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Enter Mobile Number', 
-                  ),
-                  maxLength: 10,
-                  keyboardType: TextInputType.phone,
-                  onChanged:(value){
-                    if(value.length!=10)
-                    {
-                      return "Phone number length not complete ";
-                    }else if(value.length==10){
-                      return "Phone number length is success";
-                    }
-                    
-                      else{
-                      return null;
-                    }
-                  } ,
-                  validator: (value){
-                    
-                    if(value.isEmpty){
-                      return "Mobile can't be Empty";
-                    }
-                    else if(value.length!=10)
-                    {
-                      return "Please Enter Valid Phone number";
-                    }
-                    else if(value.substring(3,)=="0000000"){
-                      return "Please Enter Valid Phone number";
-                    }else{
-                      return  null;
-                    }
-                  },
-                  onSaved: (value)=>_mobile=value,
-                ),
-                
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child:new TextFormField(
-                  decoration: new InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Enter Address', 
-                  ),
-                  validator: (value)=>value.isEmpty?"Address can't be Empty":null ,
-                  onSaved: (value)=>_address=value,
-                ),
-                
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child:new TextFormField(
-                  decoration: new InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Password', 
-                  ),
-                  validator: (value)=>value.isEmpty?"Password can't be Empty":null ,
-                  obscureText: true,
-                  onSaved: (value)=>_password=value,
-                ),
-                
-                ),
-                ];
-                  }
-                  }
-  
-                List<Widget> buildSubmitButtons(){
-                  if(_formType==FormType.login)
-                  {
-                      return [SizedBox(
-                  width: 150,
-                  height: 45,
-                  child:RaisedButton (               
-                  shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
-                  child: new Text("Login",
-                  style: new TextStyle(fontSize: 20.0,color: Colors.black,)),
-                  color: Theme.of(context).accentColor,
-                  elevation: 4.0,   
-                  splashColor: Colors.blueGrey,
-                  onPressed: validateAndSubmit,
+              children:logo()+slogan()+buidInputs()+forgotButton()+buildSubmitButtons(),
+                                                          ),
+                                                        ),
+                                                      ),
+                        ],
+                      ),)
+                                                    );
+                                                  }
+                                List<Widget> buidInputs(){
+                                  if(_formType==FormType.login)
+                                {
+                                  return [Padding(
+                                padding: const EdgeInsets.only(bottom: 15),
+                                child:new TextFormField(
+                                decoration: new InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: 'Enter Email', 
                                 ),
-                
+                                validator: (value)=>value.isEmpty?"Email can't be Empty":null ,
+                                onSaved: (value)=>_email=value,
+                              ),
+                              
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 15),
+                                child:new TextFormField(
+                                decoration: new InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: 'Password',
+                                   
                                 ),
-                  new FlatButton(
-                  child: new Text('Create an account',style: new TextStyle(fontSize: 14.0),),
-                  onPressed: moveToRegister,
-                                )];
-                  }else{
-                    return [SizedBox(
-                  width: 150,
-                  height: 45,
-                  child:RaisedButton (               
-                  shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
-                  child: new Text("Register",
-                  style: new TextStyle(fontSize: 20.0,color: Colors.black,)),
-                  color: Theme.of(context).accentColor,
-                  elevation: 4.0,   
-                  splashColor: Colors.blueGrey,
-                  onPressed: validateAndSubmit,
+                                validator: (value)=>value.isEmpty?"Password can't be Empty":null ,
+                                obscureText: true,
+                                onSaved: (value)=>_password=value,
+                              ),
+                              
+                              ),
+                              ];
+                                }else{
+                                  return [
+                                    Padding(
+                                padding: const EdgeInsets.only(bottom: 15),
+                                child:new TextFormField(
+                                decoration: new InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: 'Enter Name', 
                                 ),
-                
+                                validator: (value)=>value.isEmpty?"Name can't be Empty":null ,
+                                onSaved: (value)=>_name=value,
+                              ),
+                              
+                              ),
+                                    Padding(
+                                padding: const EdgeInsets.only(bottom: 15),
+                                child:new TextFormField(
+                                decoration: new InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: 'Enter Email', 
                                 ),
-                  new FlatButton(
-                  child: new Text('Have an Account ? Login',style: new TextStyle(fontSize: 14.0),),
-                  onPressed: moveToLogin,
-                                                )];
+                                keyboardType: TextInputType.emailAddress,
+                                validator: (value)=>value.isEmpty?"Email can't be Empty":null ,
+                                onSaved: (value)=>_email=value,
+                              ),
+                              
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 15),
+                                child:new TextFormField(
+                                decoration: new InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: 'Enter Mobile Number', 
+                                ),
+                                maxLength: 10,
+                                keyboardType: TextInputType.phone,
+                                onChanged:(value){
+                                  if(value.length!=10)
+                                  {
+                                    return "Phone number length not complete ";
+                                  }else if(value.length==10){
+                                    return "Phone number length is success";
                                   }
                                   
-                                }
-                                bool validateMobile(String value) {
-                                  String patttern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
-                                  RegExp regExp = new RegExp(patttern);
-                                  
-                                   if (!regExp.hasMatch(value)) {
-                                        return false;
+                                    else{
+                                    return null;
                                   }
-                                  return true;
-                                  }                  
-                                bool validateAndSave() {
-                                  final form =formKey.currentState;
-                                  if(form.validate()){
-                                    form.save();
-                                    return true;
+                                } ,
+                                validator: (value){
+                                  
+                                  if(value.isEmpty){
+                                    return "Mobile can't be Empty";
+                                  }
+                                  else if(value.length!=10)
+                                  {
+                                    return "Please Enter Valid Phone number";
+                                  }
+                                  else if(value.substring(3,)=="0000000"){
+                                    return "Please Enter Valid Phone number";
                                   }else{
-                                    return false;
+                                    return  null;
                                   }
-                                                      
-                                    }
-                                  
-                                    Future<FirebaseUser> validateAndSubmit() async {
-                                      var connectivityResult = await (Connectivity().checkConnectivity());
-                                      
-                                      if(validateAndSave()){
-                                        if (connectivityResult == ConnectivityResult.mobile||connectivityResult == ConnectivityResult.wifi) {
-                                            pr = new ProgressDialog(context,ProgressDialogType.Normal);
-                                          try{
-                                          final BaseAuth auth = AuthProvider.of(context).auth;
-                                          if(_formType==FormType.login){
-                                            
-                                            pr.setMessage('Please wait...');
-                                            pr.show();
-                                             await auth.signInWithEmailAndPassword(_email, _password);
-                                             pr.hide();
-                                             Load();
-                                          }else{
-                                            pr = new ProgressDialog(context,ProgressDialogType.Normal);
-                                            pr.setMessage('Please wait...');
-                                            pr.show();
-                                             await auth.createUserWithEmailAndPassword(_name,_email, _password,_mobile,_address);
-                                             pr.hide();
-                                             Load();
-                                            Toast.show("Registrasion Successfull", context, duration: 1, gravity:  Toast.BOTTOM);
-                                            
-                                          }
-                                          widget.onSignedIn();
-                                     
-                                      }catch(e){
-                                        pr.hide();
-                                        Toast.show("Fail\n"+e.toString(), context, duration: 4, gravity:  Toast.BOTTOM,backgroundColor: Colors.red);
-                                      }
-                                      } else{
-                                        
-                                        Toast.show("Please Check The Internet Connection", context, duration: 4, gravity:  Toast.BOTTOM,backgroundColor: Colors.red);
-                                        
-                                      }
-                                        
-                                    }
-                                  }
-                                
-                                
-                                
-                  void moveToRegister() {
-                    formKey.currentState.reset();
-                    setState(() {
-                      _formType=FormType.register;
-                    });
-                                      
-                                    
-                  }
+                                },
+                                onSaved: (value)=>_mobile=value,
+                              ),
+                              
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 15),
+                                child:new TextFormField(
+                                decoration: new InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: 'Enter Address', 
+                                ),
+                                validator: (value)=>value.isEmpty?"Address can't be Empty":null ,
+                                onSaved: (value)=>_address=value,
+                              ),
+                              
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 15),
+                                child:new TextFormField(
+                                decoration: new InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: 'Password', 
+                                ),
+                                validator: (value)=>value.isEmpty?"Password can't be Empty":null ,
+                                obscureText: true,
+                                onSaved: (value)=>_password=value,
+                              ),
+                              
+                              ),
+                              ];
+                                }
+                                }
                 
-                  void moveToLogin() {
-                    formKey.currentState.reset();
-                    setState(() {                      
-                    _formType=FormType.login;
-                  });
-  }
-
-  
-                   List<Widget> logo() {
-                     AssetImage assetImage=AssetImage('images/logo1.png');
-                     Image image=Image(image:assetImage,width: 150,height: 150);
-                 return[
-                   SizedBox(height:50.0),
-                   Text("VinoraMob",style: TextStyle(
-                     fontSize: 55.0,
-                     fontFamily: 'CONCERTONE',
-                     fontStyle: FontStyle.normal,
-                     color: Colors.blueGrey,
-                     letterSpacing: 2,
-                     shadows: [
-        
-        Shadow( // bottomRight
-          offset: Offset(1.5, -1.5),
-          color: Colors.black
-        ),
-        Shadow( // topRight
-          offset: Offset(1.5, 1.5),
-          color: Colors.deepOrange
-        ),
-        
-      ]
-    
-                     
-                   ),),                  
-                    image
-                   ];
-               }
-
-               List<Widget> slogan() {
-                     return[
-                       Text("The Next Level Of Ordering ...",textScaleFactor: 1.2, style: new TextStyle(fontWeight: FontWeight.bold,),)
-                     ];
-               }
+                              List<Widget> buildSubmitButtons(){
+                                if(_formType==FormType.login)
+                                {
+                                    return [SizedBox(
+                                width: 150,
+                                height: 45,
+                                child:RaisedButton (               
+                                shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
+                                child: new Text("Login",
+                                style: new TextStyle(fontSize: 20.0,color: Colors.black,)),
+                                color: Theme.of(context).accentColor,
+                                elevation: 4.0,   
+                                splashColor: Colors.blueGrey,
+                                onPressed: validateAndSubmit,
+                                              ),
+                              
+                                              ),
+                                new FlatButton(
+                                child: new Text('Create an account',style: new TextStyle(fontSize: 14.0),),
+                                onPressed: moveToRegister,
+                                              )];
+                                }else{
+                                  return [SizedBox(
+                                width: 150,
+                                height: 45,
+                                child:RaisedButton (               
+                                shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
+                                child: new Text("Register",
+                                style: new TextStyle(fontSize: 20.0,color: Colors.black,)),
+                                color: Theme.of(context).accentColor,
+                                elevation: 4.0,   
+                                splashColor: Colors.blueGrey,
+                                onPressed: validateAndSubmit,
+                                              ),
+                              
+                                              ),
+                                new FlatButton(
+                                child: new Text('Have an Account ? Login',style: new TextStyle(fontSize: 14.0),),
+                                onPressed: moveToLogin,
+                                                              )];
+                                                }
+                                                
+                                              }
+                                              bool validateMobile(String value) {
+                                                String patttern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
+                                                RegExp regExp = new RegExp(patttern);
+                                                
+                                                 if (!regExp.hasMatch(value)) {
+                                                      return false;
+                                                }
+                                                return true;
+                                                }                  
+                                              bool validateAndSave() {
+                                                final form =formKey.currentState;
+                                                if(form.validate()){
+                                                  form.save();
+                                                  return true;
+                                                }else{
+                                                  return false;
+                                                }
+                                                                    
+                                                  }
+                                                
+                                                  Future<FirebaseUser> validateAndSubmit() async {
+                                                    var connectivityResult = await (Connectivity().checkConnectivity());
+                                                    
+                                                    if(validateAndSave()){
+                                                      if (connectivityResult == ConnectivityResult.mobile||connectivityResult == ConnectivityResult.wifi) {
+                                                          pr = new ProgressDialog(context,ProgressDialogType.Normal);
+                                                        try{
+                                                        final BaseAuth auth = AuthProvider.of(context).auth;
+                                                        if(_formType==FormType.login){
+                                                          
+                                                          pr.setMessage('Please wait...');
+                                                          pr.show();
+                                                           await auth.signInWithEmailAndPassword(_email, _password);
+                                                           pr.hide();
+                                                           Load();
+                                                        }else{
+                                                          pr = new ProgressDialog(context,ProgressDialogType.Normal);
+                                                          pr.setMessage('Please wait...');
+                                                          pr.show();
+                                                           await auth.createUserWithEmailAndPassword(_name,_email, _password,_mobile,_address);
+                                                           pr.hide();
+                                                           Load();
+                                                          Toast.show("Registrasion Successfull", context, duration: 1, gravity:  Toast.BOTTOM);
+                                                          
+                                                        }
+                                                        widget.onSignedIn();
+                                                   
+                                                    }catch(e){
+                                                      pr.hide();
+                                                      Toast.show("Fail\n"+e.toString(), context, duration: 4, gravity:  Toast.BOTTOM,backgroundColor: Colors.red);
+                                                    }
+                                                    } else{
+                                                      
+                                                      Toast.show("Please Check The Internet Connection", context, duration: 4, gravity:  Toast.BOTTOM,backgroundColor: Colors.red);
+                                                      
+                                                    }
+                                                      
+                                                  }
+                                                }
+                                              
+                                              
+                                              
+                                void moveToRegister() {
+                                  formKey.currentState.reset();
+                                  setState(() {
+                                    _formType=FormType.register;
+                                  });
+                                                    
+                                                  
+                                }
+                              
+                                void moveToLogin() {
+                                  formKey.currentState.reset();
+                                  setState(() {                      
+                                  _formType=FormType.login;
+                                });
+                }
+              
+                
+                                 List<Widget> logo() {
+                                   AssetImage assetImage=AssetImage('images/logo1.png');
+                                   Image image=Image(image:assetImage,width: 150,height: 150);
+                               return[
+                                 SizedBox(height:50.0),
+                                 Text("VinoraMob",style: TextStyle(
+                                   fontSize: 55.0,
+                                   fontFamily: 'CONCERTONE',
+                                   fontStyle: FontStyle.normal,
+                                   color: Colors.blueGrey,
+                                   letterSpacing: 2,
+                                   shadows: [
+                      
+                      Shadow( // bottomRight
+                        offset: Offset(1.5, -1.5),
+                        color: Colors.black
+                      ),
+                      Shadow( // topRight
+                        offset: Offset(1.5, 1.5),
+                        color: Colors.deepOrange
+                      ),
+                      
+                    ]
+                  
+                                   
+                                 ),),                  
+                                  image
+                                 ];
+                             }
+              
+                             List<Widget> slogan() {
+                                   return[
+                                     Text("The Next Level Of Ordering ...",textScaleFactor: 1.2, style: new TextStyle(fontWeight: FontWeight.bold,),)
+                                   ];
+                             }
+              
+                List<Widget> forgotButton() {
+                  return [
+                    FlatButton(
+                      child: Text("Forgot Password ?"),
+                      onPressed: (){
+                        showDialogforemail(context);
+                                              },
+                                            )
+                                          ];
+                                        }
+                          Future<bool> showDialogforemail(BuildContext context) async {
+                                      return showDialog(
+                                          context: context,
+                                          barrierDismissible: false,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: Text('Send Your Password to the Email ', style: TextStyle(fontSize: 16.0)),
+                                              content: Container(
+                                                height: 80.0,
+                                                width: 80.0,
+                                                child: Column(
+                                                  children: <Widget>[
+                                                    TextField(
+                                                      decoration: InputDecoration(
+                                                          labelText: 'Enter Your Email',
+                                                          labelStyle: TextStyle(
+                                                              fontFamily: 'Montserrat',
+                                                              fontWeight: FontWeight.bold)),
+                                                      onChanged: (value) {
+                                                        _resetEmail=value;
+                                                      },
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              actions: <Widget>[
+                                                FlatButton(
+                                                  child: Text('Exit'),
+                                                  textColor: Colors.blue,
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                    
+                                                  },
+                                                ),
+                                                FlatButton(
+                                                  child: Text('Send'),
+                                                  textColor: Colors.blue,
+                                                  onPressed: () {
+                                                 
+                                                      sendEmail();
+                                                                     
+                                                    Navigator.of(context).pop(); 
+                                                                     
+                                                                    },
+                                                                  )
+                                                                ],
+                                                              );
+                                                            });
+                                                      }
+                          Future sendEmail() async {
+                            try{
+                               
+                              _firebaseAuth.sendPasswordResetEmail(email: _resetEmail);
+                               Toast.show("Email send Sucessfully ", context, duration: 4, gravity:  Toast.BOTTOM,backgroundColor: Colors.green);
+                              
+                            }catch(e)
+                            {
+                              Toast.show(e.message, context, duration: 4, gravity:  Toast.BOTTOM,backgroundColor: Colors.red);
+                            }
+                             
+                          }
                  
   
 }
