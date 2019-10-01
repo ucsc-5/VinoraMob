@@ -128,16 +128,22 @@ class LoginPage extends StatefulWidget{
                       return "Phone number length not complete ";
                     }else if(value.length==10){
                       return "Phone number length is success";
-                    }else{
+                    }
+                    
+                      else{
                       return null;
                     }
                   } ,
                   validator: (value){
+                    
                     if(value.isEmpty){
                       return "Mobile can't be Empty";
                     }
                     else if(value.length<10)
                     {
+                      return "Please Enter Valid Phone number";
+                    }
+                    else if(value.substring(3,)=="0000000"){
                       return "Please Enter Valid Phone number";
                     }else{
                       return  null;
