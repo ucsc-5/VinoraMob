@@ -314,10 +314,11 @@ class LoginPage extends StatefulWidget{
                                  SizedBox(height:50.0),
                                  Text("VinoraMob",style: TextStyle(
                                    fontSize: 55.0,
-                                   fontFamily: 'CONCERTONE',
+                                   fontFamily: 'KAUSHANSCRIPT',
                                    fontStyle: FontStyle.normal,
+                                   fontWeight: FontWeight.bold,
                                    color: Colors.blueGrey,
-                                   letterSpacing: 2,
+                                   letterSpacing: 3,
                                    shadows: [
                       
                       Shadow( // bottomRight

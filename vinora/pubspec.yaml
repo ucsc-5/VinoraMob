@@ -113,6 +113,10 @@ flutter:
       fonts:
          - asset: assets/fonts/ConcertOne-Regular.ttf
            weight: 400
+    - family: KAUSHANSCRIPT
+      fonts:
+         - asset: assets/fonts/KaushanScript-Regular.ttf
+           weight: 400
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro
