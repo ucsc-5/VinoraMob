@@ -318,7 +318,7 @@ class LoginPage extends StatefulWidget{
                                    fontStyle: FontStyle.normal,
                                    fontWeight: FontWeight.bold,
                                    color: Colors.blueGrey,
-                                   letterSpacing: 3,
+                                   letterSpacing: 4,
                                    shadows: [
                       
                       Shadow( // bottomRight
