@@ -339,18 +339,23 @@ class LoginPage extends StatefulWidget{
               
                              List<Widget> slogan() {
                                    return[
-                                     Text("The Next Level Of Ordering ...",textScaleFactor: 1.2, style: new TextStyle(fontWeight: FontWeight.bold,),)
+                                     Text("The Next Level Of Ordering ...",
+                                     
+                                     textScaleFactor: 1.2, style: new TextStyle(
+                                       letterSpacing: 3,
+                                       fontWeight: FontWeight.bold,),)
                                    ];
                              }
               
                 List<Widget> forgotButton() {
                   return [
+                    _formType==FormType.login?
                     FlatButton(
                       child: Text("Forgot Password ?"),
                       onPressed: (){
                         showDialogforemail(context);
                                               },
-                                            )
+                                            ):Container()
                                           ];
                                         }
                           Future<bool> showDialogforemail(BuildContext context) async {
