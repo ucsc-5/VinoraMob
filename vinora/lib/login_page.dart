@@ -123,7 +123,7 @@ class LoginPage extends StatefulWidget{
                   maxLength: 10,
                   keyboardType: TextInputType.phone,
                   onChanged:(value){
-                    if(value.length<10)
+                    if(value.length!=10)
                     {
                       return "Phone number length not complete ";
                     }else if(value.length==10){
@@ -139,7 +139,7 @@ class LoginPage extends StatefulWidget{
                     if(value.isEmpty){
                       return "Mobile can't be Empty";
                     }
-                    else if(value.length<10)
+                    else if(value.length!=10)
                     {
                       return "Please Enter Valid Phone number";
                     }
