@@ -330,10 +330,7 @@ class LoginPage extends StatefulWidget{
                         color: Colors.deepOrange
                       ),
                       
-                    ]
-                  
-                                   
-                                 ),),                  
+                    ] ),),                  
                                   image
                                  ];
                              }
@@ -344,7 +341,8 @@ class LoginPage extends StatefulWidget{
                                      
                                      textScaleFactor: 1.2, style: new TextStyle(
                                        letterSpacing: 3,
-                                       fontWeight: FontWeight.bold,),)
+                                       fontWeight: FontWeight.bold,),),
+                                       SizedBox(height: 10,)
                                    ];
                              }
               

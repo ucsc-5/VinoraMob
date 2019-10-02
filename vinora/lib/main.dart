@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
         
         title: 'Vinora',
         theme: ThemeData(
-          primarySwatch: Colors.deepOrange,
+          primarySwatch: Colors.blueGrey,
         ),
         home: RootPage(),
       ),

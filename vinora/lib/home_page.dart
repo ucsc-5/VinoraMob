@@ -63,15 +63,51 @@ class _HomePageState extends State<HomePage> {
     currentUser();
     getUserId();
   }
+    showAlertDialog(BuildContext context) {
+
+  // set up the buttons
+  Widget cancelButton = FlatButton(
+    child: Text("No"),
+    onPressed:  () {
+      Navigator.pop(context);
+    },
+  );
+  Widget continueButton = FlatButton(
+    child: Text("Yes"),
+    onPressed:  () {
+      signOut(context);
+      Navigator.pop(context);
+    },
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: Text("VinoraRep"),
+    content: Text("Are you sure want to Exit ?"),
+    actions: [
+      cancelButton,
+      continueButton,
+    ],
+  );
+
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
               appBar: AppBar(
                 title: Text('Vinora'),
                 actions: <Widget>[
-                  FlatButton(
-                    child: Text('Logout', style: TextStyle(fontSize: 17.0, color: Colors.white)),
-                    onPressed: () => signOut(context),
+                  IconButton(
+                    icon: Icon(Icons.exit_to_app),
+                    onPressed: () => showAlertDialog(context),
+                    color: Colors.red,
                   )
                 ],
               ),
