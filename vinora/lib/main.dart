@@ -10,8 +10,7 @@ class MyApp extends StatelessWidget {
     return AuthProvider(
       auth: Auth(),
       child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        
+        debugShowCheckedModeBanner: false,        
         title: 'Vinora',
         theme: ThemeData(
           primarySwatch: Colors.blueGrey,

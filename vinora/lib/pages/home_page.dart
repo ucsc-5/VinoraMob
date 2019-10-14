@@ -45,6 +45,7 @@ class _HomePageState extends State<HomePage>{
 
     Widget _buildFoodItems(Food food){
     return GestureDetector(
+      
       onTap: (){
          var route = new MaterialPageRoute(
                   builder: (BuildContext context) =>
@@ -53,6 +54,7 @@ class _HomePageState extends State<HomePage>{
                 Navigator.of(context).push(route);
       },
       child: Container(
+        padding: EdgeInsets.only(bottom: 20),
         child: BoughtFood(
           id: food.id,
           name: food.name,

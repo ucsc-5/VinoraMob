@@ -9,21 +9,14 @@ import '../pages/favorite_page.dart';
 import '../pages/profile_page.dart';
 import '../data/food_data.dart';
 import '../auth.dart';
-class MainScreen extends StatefulWidget {
-  
-  
+class MainScreen extends StatefulWidget { 
   @override
   _MainScreenState createState() => _MainScreenState();
 
-  
-  
 }
-
 class _MainScreenState extends State<MainScreen> {
   
   int currentTab = 0;
-  
-  // Pages
   HomePage homePage;
   OrderPage orderPage;
   FavoritePage favoritePage;
@@ -44,7 +37,10 @@ class _MainScreenState extends State<MainScreen> {
     currentPage = homePage;
     
     super.initState();
-    Load();
+    setState(() {
+      Load();
+    });
+    
 
   }
 
