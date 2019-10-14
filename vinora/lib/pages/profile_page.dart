@@ -33,15 +33,16 @@ class _ProfileState extends State<Profile> {
      isLoading=true; 
     });
     if(newProfilePic!=null){
+      final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+      FirebaseUser user = await _firebaseAuth.currentUser();
     final StorageReference firebaseStorageRef=FirebaseStorage.instance.ref().child(
-      'profilepics/${DateTime.now()}.jpg'
+      'profilepics/${DateTime.now()}/${user.uid}.jpg'
     );
     
     StorageUploadTask task=firebaseStorageRef.putFile(newProfilePic);
     StorageTaskSnapshot storageTaskSnapshot = await task.onComplete;
     String downloadUrl = await storageTaskSnapshot.ref.getDownloadURL();
-    final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-                    FirebaseUser user = await _firebaseAuth.currentUser();
+                    
                     
                       FirebaseDatabase.instance.reference().child('User')
                             .child(user.uid)
@@ -51,10 +52,7 @@ class _ProfileState extends State<Profile> {
                                   print(e);
                                 });
         final db1 = FirebaseDatabase.instance.reference().child("User/${user.uid}"); 
-      
-      
-        
-    
+
       db1.once().then((DataSnapshot snapshot){
         setState(() {
           isLoading=false;
