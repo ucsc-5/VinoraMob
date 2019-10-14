@@ -339,7 +339,7 @@ class LoginPage extends StatefulWidget{
                                    return[
                                      Text("The Next Level Of Ordering ...",
                                      
-                                     textScaleFactor: 1.2, style: new TextStyle(
+                                     textScaleFactor: 1, style: new TextStyle(
                                        letterSpacing: 3,
                                        fontWeight: FontWeight.bold,),),
                                        SizedBox(height: 10,)
