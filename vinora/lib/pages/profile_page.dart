@@ -32,10 +32,9 @@ class _ProfileState extends State<Profile> {
     setState(() {
      isLoading=true; 
     });
-    var randomNo=Random(20005);
     if(newProfilePic!=null){
     final StorageReference firebaseStorageRef=FirebaseStorage.instance.ref().child(
-      'profilepics/${randomNo.nextInt(5000).toString()}.jpg'
+      'profilepics/${DateTime.now()}.jpg'
     );
     
     StorageUploadTask task=firebaseStorageRef.putFile(newProfilePic);
