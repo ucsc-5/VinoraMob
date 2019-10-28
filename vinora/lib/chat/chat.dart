@@ -159,7 +159,7 @@ class Message extends StatelessWidget {
             from,
           ),
           Material(
-            color: me ? Colors.teal : Colors.deepOrange,
+            color: me ? Colors.lightBlue : Colors.white,
             borderRadius: BorderRadius.circular(10.0),
             elevation: 6.0,
             child: Container(

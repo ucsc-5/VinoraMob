@@ -115,8 +115,8 @@ flutter:
            weight: 400
     - family: KAUSHANSCRIPT
       fonts:
-         - asset: assets/fonts/KaushanScript-Regular.ttf
-           weight: 400
+         - asset: assets/fonts/NABILA.ttf
+           
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro

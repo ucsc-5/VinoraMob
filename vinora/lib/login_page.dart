@@ -313,21 +313,21 @@ class LoginPage extends StatefulWidget{
                                return[
                                  SizedBox(height:50.0),
                                  Text("VinoraMob",style: TextStyle(
-                                   fontSize: 55.0,
+                                   fontSize: 45.0,
                                    fontFamily: 'KAUSHANSCRIPT',
                                    fontStyle: FontStyle.normal,
                                    fontWeight: FontWeight.bold,
-                                   color: Colors.blueGrey,
-                                   letterSpacing: 4,
+                                   color: Colors.black,
+                                   letterSpacing: 1,
                                    shadows: [
                       
                       Shadow( // bottomRight
                         offset: Offset(1.5, -1.5),
-                        color: Colors.black
+                        color: Colors.grey
                       ),
                       Shadow( // topRight
                         offset: Offset(1.5, 1.5),
-                        color: Colors.deepOrange
+                        color: Colors.grey
                       ),
                       
                     ] ),),                  
@@ -363,7 +363,7 @@ class LoginPage extends StatefulWidget{
                                           barrierDismissible: false,
                                           builder: (BuildContext context) {
                                             return AlertDialog(
-                                              title: Text('Send Your Password to the Email ', style: TextStyle(fontSize: 16.0)),
+                                              title: Text('Forgot Password ?', style: TextStyle(fontSize: 16.0)),
                                               content: Container(
                                                 height: 80.0,
                                                 width: 80.0,
