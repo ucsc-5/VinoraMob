@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 abstract class BaseAuth {
@@ -27,14 +28,16 @@ class Auth implements BaseAuth {
     
       AuthResult result= await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
     final FirebaseUser user =result.user;
-    
-    databaseReference.child("User/"+user.uid).set({
-    'name': name,
+    Firestore.instance.collection('retailers').document(user.uid)
+  .setData({ 
+    'shopName': name,
     'email':email,
     'address':address,
-    'mobile':mobile,
-    'image':"https://pixel.nymag.com/imgs/daily/vulture/2017/06/14/14-tom-cruise.w700.h700.jpg"
-  });
+    'contactNumber':mobile,
+    'url':"https://www.stickpng.com/assets/images/585e4bf3cb11b227491c339a.png",
+    'state':'0',
+     });
+    
     return user.uid;
     
     
