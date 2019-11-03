@@ -42,7 +42,20 @@ class LoginPage extends StatefulWidget{
       return new Scaffold(
         
         resizeToAvoidBottomInset: false,
-        body: SingleChildScrollView ( child: Stack(
+        body: 
+        Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+            image: AssetImage("images/background.jpg"),
+            fit: BoxFit.cover,
+          ),
+          ),
+          child: SingleChildScrollView ( 
+          
+          child: Stack(
+            
           children: <Widget>[
             new Container(padding:EdgeInsets.all(11.0),
           child: new Form(
@@ -56,7 +69,8 @@ class LoginPage extends StatefulWidget{
                                                         ),
                                                       ),
                         ],
-                      ),)
+                      ),),)
+        
                                                     );
                                                   }
                                 List<Widget> buidInputs(){
@@ -65,10 +79,16 @@ class LoginPage extends StatefulWidget{
                                   return [Padding(
                                 padding: const EdgeInsets.only(bottom: 15),
                                 child:new TextFormField(
+                                  style: TextStyle(color: Colors.black,),
+                                  
                                 decoration: new InputDecoration(
-                                  border: OutlineInputBorder(),
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  border: OutlineInputBorder(
+
+                                  ),
                                   labelText: 'Enter Email', 
-                                ),
+                                  suffixIcon: Icon(Icons.email)   ),
                                 validator: (value)=>value.isEmpty?"Email can't be Empty":null ,
                                 onSaved: (value)=>_email=value,
                               ),
@@ -78,9 +98,11 @@ class LoginPage extends StatefulWidget{
                                 padding: const EdgeInsets.only(bottom: 15),
                                 child:new TextFormField(
                                 decoration: new InputDecoration(
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  suffixIcon: Icon(Icons.lock),
                                   border: OutlineInputBorder(),
                                   labelText: 'Password',
-                                   
                                 ),
                                 validator: (value)=>value.isEmpty?"Password can't be Empty":null ,
                                 obscureText: true,
@@ -96,7 +118,10 @@ class LoginPage extends StatefulWidget{
                                 child:new TextFormField(
                                 decoration: new InputDecoration(
                                   border: OutlineInputBorder(),
-                                  labelText: 'Enter Name', 
+                                  labelText: 'Enter Name',
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  suffixIcon: Icon(Icons.mood)
                                 ),
                                 validator: (value)=>value.isEmpty?"Name can't be Empty":null ,
                                 onSaved: (value)=>_name=value,
@@ -108,7 +133,10 @@ class LoginPage extends StatefulWidget{
                                 child:new TextFormField(
                                 decoration: new InputDecoration(
                                   border: OutlineInputBorder(),
-                                  labelText: 'Enter Email', 
+                                  labelText: 'Enter Email',
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  suffixIcon: Icon(Icons.email) 
                                 ),
                                 keyboardType: TextInputType.emailAddress,
                                 validator: (value)=>value.isEmpty?"Email can't be Empty":null ,
@@ -122,6 +150,9 @@ class LoginPage extends StatefulWidget{
                                 decoration: new InputDecoration(
                                   border: OutlineInputBorder(),
                                   labelText: 'Enter Mobile Number', 
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  suffixIcon: Icon(Icons.phone)
                                 ),
                                 maxLength: 10,
                                 keyboardType: TextInputType.phone,
@@ -161,7 +192,10 @@ class LoginPage extends StatefulWidget{
                                 child:new TextFormField(
                                 decoration: new InputDecoration(
                                   border: OutlineInputBorder(),
-                                  labelText: 'Enter Address', 
+                                  labelText: 'Enter Address',
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  suffixIcon: Icon(Icons.location_on) 
                                 ),
                                 validator: (value)=>value.isEmpty?"Address can't be Empty":null ,
                                 onSaved: (value)=>_address=value,
@@ -173,7 +207,10 @@ class LoginPage extends StatefulWidget{
                                 child:new TextFormField(
                                 decoration: new InputDecoration(
                                   border: OutlineInputBorder(),
-                                  labelText: 'Password', 
+                                  labelText: 'Password',
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  suffixIcon: Icon(Icons.lock) 
                                 ),
                                 validator: (value)=>value.isEmpty?"Password can't be Empty":null ,
                                 obscureText: true,
@@ -191,13 +228,14 @@ class LoginPage extends StatefulWidget{
                                     return [SizedBox(
                                 width: 150,
                                 height: 45,
-                                child:RaisedButton (               
+                                child:RaisedButton (    
+                                           
                                 shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
                                 child: new Text("Login",
                                 style: new TextStyle(fontSize: 20.0,color: Colors.black,)),
                                 color: Theme.of(context).accentColor,
                                 elevation: 4.0,   
-                                splashColor: Colors.blueGrey,
+                                splashColor: Colors.green,
                                 onPressed: validateAndSubmit,
                                               ),
                               

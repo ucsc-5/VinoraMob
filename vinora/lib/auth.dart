@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
+
 abstract class BaseAuth {
   
   Future<String> signInWithEmailAndPassword(String email, String password);
@@ -14,7 +14,7 @@ abstract class BaseAuth {
 
 class Auth implements BaseAuth {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final databaseReference = FirebaseDatabase.instance.reference();
+  
   @override
   Future<String> signInWithEmailAndPassword(String email, String password) async {    
     AuthResult result= await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);

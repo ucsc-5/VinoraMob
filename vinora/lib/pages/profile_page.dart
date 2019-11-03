@@ -1,12 +1,13 @@
 import 'dart:io';
 import 'dart:math';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:vinora/login_page.dart';
+
 class Profile extends StatefulWidget {
   @override
   _ProfileState createState() => _ProfileState();
@@ -15,9 +16,9 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   ProgressDialog pr;
-  var imageUrl="https://pixel.nymag.com/imgs/daily/vulture/2017/06/14/14-tom-cruise.w700.h700.jpg";
+  var imageUrl="https://www.stickpng.com/assets/images/585e4bf3cb11b227491c339a.png";
   File newProfilePic;
-  final db=FirebaseDatabase.instance.reference();
+  
   String name="Name Loading ...";
   Future getImage() async {
     var image = await ImagePicker.pickImage(source: ImageSource.gallery);
@@ -29,6 +30,7 @@ class _ProfileState extends State<Profile> {
   }
   
   uploadImage() async{
+    
     setState(() {
      isLoading=true; 
     });
@@ -44,24 +46,25 @@ class _ProfileState extends State<Profile> {
     String downloadUrl = await storageTaskSnapshot.ref.getDownloadURL();
                     
                     
-                      FirebaseDatabase.instance.reference().child('User')
-                            .child(user.uid)
-                            .update({
-                            'image':downloadUrl
-                            }).catchError((e){
-                                  print(e);
-                                });
-        final db1 = FirebaseDatabase.instance.reference().child("User/${user.uid}"); 
-
-      db1.once().then((DataSnapshot snapshot){
-        setState(() {
-          isLoading=false;
-          imageUrl=snapshot.value['image'];
-        });
+                      final DocumentReference postRef = Firestore.instance.document('retailers/${user.uid}');
+Firestore.instance.runTransaction((Transaction tx) async {
+  DocumentSnapshot postSnapshot = await tx.get(postRef);
+  if (postSnapshot.exists) {
+    await tx.update(postRef, <String, dynamic>{'url': downloadUrl});
+  }
+});
+Firestore.instance
+        .collection('retailers')
+        .document(user.uid)
+        .get()
+        .then((DocumentSnapshot ds) {
+          setState(() {
+            isLoading=false;
+          imageUrl=ds['url'];
+          });
+      // use ds as a snapshot
+    });
         
-      }).catchError((e){
-  print(e);
-                                });
       
     
     
@@ -77,16 +80,18 @@ class _ProfileState extends State<Profile> {
       }
       Future<String> currentUser() async {
     FirebaseUser user = await _firebaseAuth.currentUser();
-    final db1 = FirebaseDatabase.instance.reference().child("User/${user.uid}");
-        db1.once().then((DataSnapshot snapshot){
+    Firestore.instance
+        .collection('retailers')
+        .document(user.uid)
+        .get()
+        .then((DocumentSnapshot ds) {
           setState(() {
-            name=snapshot.value['name'];
-            imageUrl=snapshot.value['image'];
+            name=ds['shopName'];
+            imageUrl=ds['url'];
           });
-        
-      }).catchError((e){
-                                  print(e);
-                                });
+      // use ds as a snapshot
+    });
+   
       return user != null ? user.uid : null;
   }
   bool isLoading = false;
@@ -271,13 +276,13 @@ class _ProfileState extends State<Profile> {
                                                         final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
                                                       FirebaseUser user = await _firebaseAuth.currentUser();
                                                         
-                                                        FirebaseDatabase.instance.reference().child('User')
-                                                              .child(user.uid)
-                                                              .update({
-                                                              'name':name
-                                                              }).catchError((e){
-                                                                print(e);
-                                                              });
+                                                        final DocumentReference postRef = Firestore.instance.document('retailers/${user.uid}');
+Firestore.instance.runTransaction((Transaction tx) async {
+  DocumentSnapshot postSnapshot = await tx.get(postRef);
+  if (postSnapshot.exists) {
+    await tx.update(postRef, <String, dynamic>{'shopName': name});
+  }
+});
                                                               setState(() {
                                                                isLoading=false; 
                                                               });

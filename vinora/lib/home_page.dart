@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'auth.dart';
 import 'auth_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'companies/RoyalVintage.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 class HomePage extends StatefulWidget {
   
   final VoidCallback onSignedOut;
@@ -16,7 +15,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String id="null",name="Loding..",email="Loding..",firstLetter="L";
-  String url="https://pixel.nymag.com/imgs/daily/vulture/2017/06/14/14-tom-cruise.w700.h700.jpg";
+  String url="https://www.stickpng.com/assets/images/585e4bf3cb11b227491c339a.png";
   Future<void> signOut(BuildContext context) async {
     try {
       final BaseAuth auth = AuthProvider.of(context).auth;
@@ -29,30 +28,40 @@ class _HomePageState extends State<HomePage> {
   Future<String> currentUser() async {
     final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
     FirebaseUser user = await _firebaseAuth.currentUser();
-    final db1 = FirebaseDatabase.instance.reference().child("User/${user.uid}");
-        db1.once().then((DataSnapshot snapshot){
+    Firestore.instance
+        .collection('retailers')
+        .document(user.uid)
+        .get()
+        .then((DocumentSnapshot ds) {
           setState(() {
-            url=snapshot.value['image'];
-          });  
-      }).catchError((e){
-                                  print(e);
-                                });
+            url=ds['url'];
+          });
+      // use ds as a snapshot
+    });
+    
       return user != null ? user.uid : null;
   }
   
   Future<String> getUserId() async{
     final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-    final databaseReference = FirebaseDatabase.instance.reference();
+    
     FirebaseUser user = await _firebaseAuth.currentUser();
     id=user.uid;
-    databaseReference.child("User/"+id).once().then((DataSnapshot snap){
-      setState(() {
-        name=snap.value["name"];
-        email=snap.value["email"];
+    Firestore.instance
+        .collection('retailers')
+        .document(id)
+        .get()
+        .then((DocumentSnapshot ds) {
+          setState(() {
+            setState(() {
+        name=ds['shopName'];
+        email=ds['email'];
         firstLetter=name.substring(0,1).toUpperCase();
       });
-      
+          });
+      // use ds as a snapshot
     });
+    
     
     return user != null ? user.uid : null;
   }
@@ -82,7 +91,7 @@ class _HomePageState extends State<HomePage> {
 
   // set up the AlertDialog
   AlertDialog alert = AlertDialog(
-    title: Text("VinoraRep"),
+    title: Text("VinoraMob"),
     content: Text("Are you sure want to Exit ?"),
     actions: [
       cancelButton,
@@ -111,73 +120,39 @@ class _HomePageState extends State<HomePage> {
                   )
                 ],
               ),
-              body:SingleChildScrollView (child: Column(
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      FlatButton(
-                    child: Row(
-                                
-                                children: [
-                                  Padding(padding: const EdgeInsets.all(15),
-                                    child: CircleAvatar(
-                                      backgroundImage: AssetImage("images/logo1.png"),
-                                      radius: 50,),
-                                                      ),
-                                                      Padding(padding: const EdgeInsets.all(15),
-                                                      child: Column(
-                                                        children:<Widget>[
-                                                            Text("Royal Vintage",style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold),),
-                                                            Text("Registered",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold,fontStyle: FontStyle.italic,color: Colors.green),)
-                                                        ] 
-                                                      ),
-                                                      ),
-                                                    ],
-                                                  ),
-                    onPressed: ()=>{
-                      Navigator.push(context, MaterialPageRoute(builder:(context){
-                        return MainScreen();
-                      })),
-
-                      
-                    },
-                    
-                  ),
-                  
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      FlatButton(
-                    child: Row(
-                                
-                                children: [
-                                  Padding(padding: const EdgeInsets.all(15),
-                                    child: CircleAvatar(
-                                      backgroundImage: AssetImage("images/logo1.png"),
-                                      radius: 50,),
-                                                      ),
-                                                      Padding(padding: const EdgeInsets.all(15),
-                                                      child: Column(
-                                                        children:<Widget>[
-                                                            Text("ABC pvt Ltd",style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold),),
-                                                            Text("Not Registered",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold,fontStyle: FontStyle.italic,color: Colors.red),)
-                                                        ] 
-                                                      ),
-                                                      ),
-                                                    ],
-                                                  ),
-                    onPressed: ()=>{
-
-                    },
-                    
-                  ),
-                  
-                    ],
-                  ),
-                ],
-              ) ,
-            ),    
+              body:StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance.collection('companies').snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasError)
+          return new Text('Error: ${snapshot.error}');
+        switch (snapshot.connectionState) {
+          case ConnectionState.waiting: return new Text('Loading...');
+          default:
+            return new ListView(
+              children: snapshot.data.documents.map((DocumentSnapshot document) {
+                return new ListTile(
+                  onTap: (){
+                    document['state']=='1'?Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MainScreen(),
+      ),
+    ):"";
+                  },
+                  leading: CircleAvatar(radius: 50,
+                                backgroundImage: NetworkImage(
+                                   document['imagePath'] ),
+                                backgroundColor:
+                                    Colors.transparent,
+                              ),
+                  title: new Text(document['companyName']),
+                  subtitle: new Text(document['address']),
+                );
+              }).toList(),
+            );
+        }
+      },
+    ),    
                     drawer: Drawer(child: ListView(
                                             children: <Widget>[
                                               UserAccountsDrawerHeader(
