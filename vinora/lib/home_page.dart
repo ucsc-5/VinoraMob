@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vinora/theme.dart';
 import 'auth.dart';
 import 'auth_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -65,6 +66,7 @@ class _HomePageState extends State<HomePage> {
     
     return user != null ? user.uid : null;
   }
+  
   @override
   void initState() {
    
@@ -131,22 +133,30 @@ class _HomePageState extends State<HomePage> {
             return new ListView(
               children: snapshot.data.documents.map((DocumentSnapshot document) {
                 return new ListTile(
+                  contentPadding:EdgeInsets.only(top: 10,bottom: 10,left: 10),
                   onTap: (){
                     document['state']=='1'?Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => MainScreen(),
+        builder: (context) => MainScreen(name:document['companyName'],address:document['address'],contactNumber:document['contactNumber'],imagePath:document['imagePath'],companyId: document['companyId'],),
       ),
     ):"";
                   },
-                  leading: CircleAvatar(radius: 50,
+                  leading: CircleAvatar(
+                    radius: 30,
                                 backgroundImage: NetworkImage(
                                    document['imagePath'] ),
                                 backgroundColor:
                                     Colors.transparent,
                               ),
-                  title: new Text(document['companyName']),
-                  subtitle: new Text(document['address']),
+                  title: new Padding(
+                    padding: EdgeInsets.only(left:10),
+                    child:Text(document['companyName'],style: AppTheme.headline,) 
+                  ) ,
+                  subtitle: new Padding(
+                    padding: EdgeInsets.only(left:10),
+                    child:Text(document['address'],style: AppTheme.title,) ,
+                  ) ,
                 );
               }).toList(),
             );

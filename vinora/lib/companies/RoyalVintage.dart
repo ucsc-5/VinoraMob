@@ -10,6 +10,12 @@ import '../pages/profile_page.dart';
 import '../data/food_data.dart';
 import '../auth.dart';
 class MainScreen extends StatefulWidget { 
+  final String name;
+  final String address;
+  final String contactNumber;
+  final String imagePath;
+  final String companyId;
+   MainScreen({Key key,  @required this.name,@required this.address,@required this.contactNumber,@required this.imagePath,@required this.companyId}): super(key: key);
   @override
   _MainScreenState createState() => _MainScreenState();
 
@@ -28,7 +34,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     
-    homePage = HomePage();
+    homePage = HomePage(name:widget.name,address:widget.address,contactNumber:widget.contactNumber,imagePath:widget.imagePath,companyId:widget.companyId);
     orderPage = OrderPage();
     favoritePage = FavoritePage();
     profilePage = Profile();
@@ -50,10 +56,7 @@ class _MainScreenState extends State<MainScreen> {
     final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
     
     return Scaffold(
-      appBar: AppBar(
-                title: Text('Royal Vintage'),
-                
-              ),
+      
       backgroundColor: Colors.white,
       resizeToAvoidBottomPadding: false,
       bottomNavigationBar: BottomNavigationBar(
