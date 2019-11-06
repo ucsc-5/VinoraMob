@@ -7,7 +7,6 @@ import '../pages/home_page.dart';
 import '../pages/order_page.dart';
 import '../pages/favorite_page.dart';
 import '../pages/profile_page.dart';
-import '../data/food_data.dart';
 import '../auth.dart';
 class MainScreen extends StatefulWidget { 
   final String name;
@@ -43,9 +42,7 @@ class _MainScreenState extends State<MainScreen> {
     currentPage = homePage;
     
     super.initState();
-    setState(() {
-      Load();
-    });
+    
     
 
   }

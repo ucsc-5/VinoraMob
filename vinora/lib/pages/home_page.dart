@@ -2,17 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:vinora/components/show_more_button.dart';
 import 'package:vinora/components/upper_bar.dart';
+import 'package:vinora/pages/ordering.dart';
 import 'package:vinora/theme.dart';
-import '../widgets/bought_foods.dart';
-import '../widgets/food_category.dart';
-import '../widgets/search_file.dart';
-import '../pages/category_page.dart';
 
-// Data
-import '../data/food_data.dart';
 
-// Model 
-import '../models/food_model.dart';
 
 class HomePage extends StatefulWidget{
   final String name;
@@ -26,8 +19,7 @@ class HomePage extends StatefulWidget{
 }
 
 class _HomePageState extends State<HomePage>{
-  
-  List<Food> _foods = foods;
+
   bool isExpanded=false;
   
   @override
@@ -62,7 +54,7 @@ class _HomePageState extends State<HomePage>{
                               });
                             }),
                             Container(
-                              height: 300,
+                              height:300,
                               child:StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance.collection('items').where("companyId", isEqualTo: widget.companyId).snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -76,6 +68,14 @@ class _HomePageState extends State<HomePage>{
             return new ListView(
               children: snapshot.data.documents.map((DocumentSnapshot document) {
                 return new ListTile(
+                  onTap: (){
+                    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Ordering(name:document['itemName'],description:document['description'],unitPrice:document['unitPrice'],imagePath:document['itemImagePath'],itemId: document.documentID,countity: document['quantity'].toDouble(),companyId:widget.companyId,address: widget.address,contactNumber: widget.contactNumber,),
+      ),
+    );
+                  },
                   leading: CircleAvatar(radius: 30,
                                 backgroundImage: NetworkImage(
                                    document['itemImagePath'] ),
@@ -107,30 +107,6 @@ class _HomePageState extends State<HomePage>{
     );
   }
 
-    Widget _buildFoodItems(Food food){
-    return GestureDetector(
-      
-      onTap: (){
-         var route = new MaterialPageRoute(
-                  builder: (BuildContext context) =>
-                      new Category(value: food.id,),
-                );
-                Navigator.of(context).push(route);
-      },
-      child: Container(
-        padding: EdgeInsets.only(bottom: 20),
-        child: BoughtFood(
-          id: food.id,
-          name: food.name,
-          imagePath: food.imagePath,
-          category: food.category,
-          discount: food.discount,
-          price: food.price,
-          
-        ),
-      ),
-        
-      );
-  }
+    
 
 }

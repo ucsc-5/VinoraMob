@@ -55,16 +55,16 @@ class AppTheme {
   static const TextStyle headline = TextStyle(
     fontFamily: fontName,
     fontWeight: FontWeight.bold,
-    fontSize: 24,
-    letterSpacing: 0.27,
+    fontSize: 30,
+    letterSpacing: 0.5,
     color: darkerText,
   );
 
   static const TextStyle subHeadline = TextStyle(
     fontFamily: fontName,
     fontWeight: FontWeight.w500,
-    fontSize: 20,
-    letterSpacing: 0.27,
+    fontSize: 19,
+    letterSpacing:1,
     color: darkerText,
   );
 
