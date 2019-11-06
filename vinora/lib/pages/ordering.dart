@@ -2,12 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
-import 'package:vinora/auth.dart';
-import 'package:vinora/auth_provider.dart';
+import 'package:vinora/companies/RoyalVintage.dart';
 import 'package:vinora/components/order_upper_bar.dart';
-import 'package:vinora/components/show_more_button.dart';
-import 'package:vinora/pages/home_page.dart';
-import 'package:vinora/theme.dart';
+
 class Ordering extends StatefulWidget{
   final String name;
   final String description;
@@ -17,19 +14,22 @@ class Ordering extends StatefulWidget{
   final double countity;
   final String companyId;
   final String address;
-  final String contactNumber;
-  Ordering({Key key,  @required this.name,@required this.description,@required this.unitPrice,@required this.imagePath,@required this.itemId,@required this.countity,@required this.companyId,@required this.address,@required this.contactNumber}):super(key: key);
+  final String companyName;
+  final String companyContact;
+  final String companyImage;
+  Ordering({Key key,  @required this.name,@required this.description,@required this.unitPrice,@required this.imagePath,@required this.itemId,@required this.countity,@required this.companyId,@required this.address,@required this.companyContact,@required this.companyName,@required this.companyImage}):super(key: key);
   @override
   _OrderingState createState() => _OrderingState();
 }
 
 class _OrderingState extends State<Ordering>{
   String availabelCount;
+  double subTotal=0;
   String _reqQuantity;
   final formKey=new GlobalKey<FormState>();
   @override
   void initState() {
-    // TODO: implement initState
+    
     super.initState();
     availabelCount=widget.countity.toString();
   }
@@ -140,16 +140,19 @@ class _OrderingState extends State<Ordering>{
                                                     await tx.update(postRef, <String, dynamic>{'quantity': postSnapshot.data['quantity'] - double.parse(_reqQuantity)});
                                                     setState(() {
                                                       availabelCount= (postSnapshot.data['quantity'] - double.parse(_reqQuantity)).toString();
+                                                      //subTotal=postSnapshot.data['subTotal'] +(widget.unitPrice* double.parse(_reqQuantity));
                                                     });
+                                                    
+
                                                     Firestore.instance.collection('cart').document()
-                                                .setData({ 'itemId': widget.itemId, 'quantity': double.parse(_reqQuantity),'companyId':widget.companyId,'userId':user.uid });
+                                                .setData({ 'itemId': widget.itemId, 'quantity': double.parse(_reqQuantity),'companyId':widget.companyId,'userId':user.uid,'itemName':widget.name,'imageUrl':widget.imagePath,'unitPrice':widget.unitPrice,'total':(widget.unitPrice* double.parse(_reqQuantity))});
                                                   }
                                                 });
                                                 Toast.show("Your Item is added to Cart", context, duration: 4, gravity:  Toast.BOTTOM,backgroundColor: Colors.green);
                                                 Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
-                                                  builder: (context) => HomePage(name:widget.name,address:widget.address,contactNumber:widget.contactNumber,imagePath:widget.imagePath,companyId:widget.companyId),
+                                                  builder: (context) => MainScreen(name:widget.companyName,address:widget.address,contactNumber:widget.companyContact,imagePath:widget.companyImage,companyId:widget.companyId),
                                                 ),
                                               );
                                                           }else{

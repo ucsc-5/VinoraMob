@@ -72,7 +72,7 @@ class _HomePageState extends State<HomePage>{
                     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => Ordering(name:document['itemName'],description:document['description'],unitPrice:document['unitPrice'],imagePath:document['itemImagePath'],itemId: document.documentID,countity: document['quantity'].toDouble(),companyId:widget.companyId,address: widget.address,contactNumber: widget.contactNumber,),
+        builder: (context) => Ordering(name:document['itemName'],description:document['description'],unitPrice:document['unitPrice'],imagePath:document['itemImagePath'],itemId: document.documentID,countity: document['quantity'].toDouble(),companyId:widget.companyId,address: widget.address,companyContact: widget.contactNumber,companyName: widget.name,companyImage: widget.imagePath,),
       ),
     );
                   },

@@ -46,7 +46,7 @@ class AppTheme {
   static const TextStyle display1 = TextStyle(
     fontFamily: fontName,
     fontWeight: FontWeight.bold,
-    fontSize: 36,
+    fontSize: 32,
     letterSpacing: 0.4,
     height: 0.9,
     color: darkerText,
@@ -55,7 +55,7 @@ class AppTheme {
   static const TextStyle headline = TextStyle(
     fontFamily: fontName,
     fontWeight: FontWeight.bold,
-    fontSize: 30,
+    fontSize: 24,
     letterSpacing: 0.5,
     color: darkerText,
   );
