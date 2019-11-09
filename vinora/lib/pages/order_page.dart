@@ -10,24 +10,27 @@ class OrderPage extends StatefulWidget {
 }
 
 class _OrderPageState extends State<OrderPage> {
+
   String userId;
   double subTotal=0;
+ 
   @override
   void initState() {
+    subTotal=0;
     getCurrentUserId();
-    
-       Firestore.instance
+     Firestore.instance
       .collection('cart')
       .where("retailerId", isEqualTo: userId)
       .snapshots()
       .listen((data) =>
           data.documents.forEach((doc) => 
           subTotal+=doc["total"]));
-        
-        
-      }
+    
+  }
       @override
       Widget build(BuildContext context) {
+        //subTotal=0;
+        
         return Scaffold(
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
@@ -92,6 +95,16 @@ class _OrderPageState extends State<OrderPage> {
                                     DocumentSnapshot postSnapshot = await tx.get(postRef);
                                     if (postSnapshot.exists) {
                                      await tx.update(postRef, <String, dynamic>{'quantity': postSnapshot.data['quantity'] + postSnapshot1.data['quantity']});
+                                     setState(() {
+                                       subTotal=0;
+                                      Firestore.instance
+                                      .collection('cart')
+                                      .where("retailerId", isEqualTo: userId)
+                                      .snapshots()
+                                      .listen((data) =>
+                                          data.documents.forEach((doc) => 
+                                          subTotal+=doc["total"]));
+                                     });
                                     }
                                   });
                                       
