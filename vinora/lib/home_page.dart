@@ -126,7 +126,11 @@ class _HomePageState extends State<HomePage> {
       stream: Firestore.instance.collection('companies').snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError)
-          return new Text('Error: ${snapshot.error}');
+          return new 
+          Center(
+            child: Text('Error: ${snapshot.error}'),
+          )
+          ;
         switch (snapshot.connectionState) {
           case ConnectionState.waiting: return new Text('Loading...');
           default:
