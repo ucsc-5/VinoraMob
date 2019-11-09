@@ -62,7 +62,10 @@ class _HomePageState extends State<HomePage>{
           return new Text('Error: ${snapshot.error}');
           
         switch (snapshot.connectionState) {
-          case ConnectionState.waiting: return new Text('Loading...');
+          case ConnectionState.waiting: return new
+          Center(
+            child: Text('Loading...'),
+          ) ;
           
           default:
             return new ListView(
@@ -72,7 +75,7 @@ class _HomePageState extends State<HomePage>{
                     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => Ordering(name:document['itemName'],description:document['description'],unitPrice:document['unitPrice'],imagePath:document['itemImagePath'],itemId: document.documentID,countity: document['quantity'].toDouble(),companyId:widget.companyId,address: widget.address,companyContact: widget.contactNumber,companyName: widget.name,companyImage: widget.imagePath,),
+        builder: (context) => Ordering(name:document['itemName'],description:document['description'],unitPrice:document['unitPrice'],imagePath:document['itemImagePath'],itemId: document.documentID,countity: document['quantity'].toDouble(),companyId:widget.companyId,address: widget.address,companyContact: widget.contactNumber,companyName: widget.name,companyImage: widget.imagePath,brand: document['brand'],state: document['state'],type: document['type'],),
       ),
     );
                   },
@@ -92,10 +95,7 @@ class _HomePageState extends State<HomePage>{
       },
     ),
                             )
-                            
-                            
-                        
-                        
+                      
                       ],
                     ),
                     

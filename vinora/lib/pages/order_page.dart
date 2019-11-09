@@ -18,7 +18,7 @@ class _OrderPageState extends State<OrderPage> {
     
        Firestore.instance
       .collection('cart')
-      .where("userId", isEqualTo: userId)
+      .where("retailerId", isEqualTo: userId)
       .snapshots()
       .listen((data) =>
           data.documents.forEach((doc) => 
@@ -48,12 +48,16 @@ class _OrderPageState extends State<OrderPage> {
             child: Padding(
             padding: EdgeInsets.all(10),
             child: StreamBuilder<QuerySnapshot>(
-          stream: Firestore.instance.collection('cart').where("userId", isEqualTo:userId).snapshots(),
+          stream: Firestore.instance.collection('cart').where("retailerId", isEqualTo:userId).snapshots(),
           builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (snapshot.hasError)
               return new Text('Error: ${snapshot.error}');
             switch (snapshot.connectionState) {
-              case ConnectionState.waiting: return new Text('Loading...');
+              case ConnectionState.waiting: return new
+              Center(
+                child:Text('Loading...') ,
+              );
+               
               default:
                 return new ListView(
                   children: snapshot.data.documents.map((DocumentSnapshot document) {
@@ -67,7 +71,7 @@ class _OrderPageState extends State<OrderPage> {
                       trailing: Text("Total :"+document['total'].toString(),style: AppTheme.title,),
                       leading: CircleAvatar(radius: 30,
                                 backgroundImage: NetworkImage(
-                                   document['imageUrl'] ),
+                                   document['itemImagePath'] ),
                                 backgroundColor:
                                     Colors.transparent,
                               ),
@@ -96,11 +100,7 @@ class _OrderPageState extends State<OrderPage> {
                                     Firestore.instance.document("cart"+'/${document.documentID}').delete();
                                     snapshot.data.documents.remove(document);
                                   });
-                                    
-                                    
-                                    
-
-
+                                 
                                   },
                     ); 
                      

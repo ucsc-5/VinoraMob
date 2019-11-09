@@ -17,7 +17,10 @@ class Ordering extends StatefulWidget{
   final String companyName;
   final String companyContact;
   final String companyImage;
-  Ordering({Key key,  @required this.name,@required this.description,@required this.unitPrice,@required this.imagePath,@required this.itemId,@required this.countity,@required this.companyId,@required this.address,@required this.companyContact,@required this.companyName,@required this.companyImage}):super(key: key);
+  final String brand;
+  final String state;
+  final String type;
+  Ordering({Key key,  @required this.name,@required this.description,@required this.unitPrice,@required this.imagePath,@required this.itemId,@required this.countity,@required this.companyId,@required this.address,@required this.companyContact,@required this.companyName,@required this.companyImage,@required this.brand,@required this.state,@required this.type}):super(key: key);
   @override
   _OrderingState createState() => _OrderingState();
 }
@@ -145,7 +148,7 @@ class _OrderingState extends State<Ordering>{
                                                     
 
                                                     Firestore.instance.collection('cart').document()
-                                                .setData({ 'itemId': widget.itemId, 'quantity': double.parse(_reqQuantity),'companyId':widget.companyId,'userId':user.uid,'itemName':widget.name,'imageUrl':widget.imagePath,'unitPrice':widget.unitPrice,'total':(widget.unitPrice* double.parse(_reqQuantity))});
+                                                .setData({ 'itemId': widget.itemId, 'quantity': double.parse(_reqQuantity),'companyId':widget.companyId,'retailerId':user.uid,'itemName':widget.name,'itemImagePath':widget.imagePath,'unitPrice':widget.unitPrice,'total':(widget.unitPrice* double.parse(_reqQuantity)),'description':widget.description,'state':widget.state,'type':widget.type,'brand':widget.brand});
                                                   }
                                                 });
                                                 Toast.show("Your Item is added to Cart", context, duration: 4, gravity:  Toast.BOTTOM,backgroundColor: Colors.green);
