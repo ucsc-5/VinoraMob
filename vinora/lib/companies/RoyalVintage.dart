@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:vinora/auth_provider.dart';
 import 'package:vinora/chat/chat.dart';
 import 'package:vinora/map/location.dart';
+import 'package:vinora/map/location.dart' ;
+import 'package:vinora/pages/order_status.dart';
 import '../pages/home_page.dart';
 import '../pages/order_page.dart';
-import '../pages/favorite_page.dart';
 import '../pages/profile_page.dart';
 import '../auth.dart';
 class MainScreen extends StatefulWidget { 
@@ -24,7 +25,7 @@ class _MainScreenState extends State<MainScreen> {
   int currentTab = 0;
   HomePage homePage;
   OrderPage orderPage;
-  FavoritePage favoritePage;
+  GetUserLocation order;
   Profile profilePage;
 
   List<Widget> pages;
@@ -35,9 +36,9 @@ class _MainScreenState extends State<MainScreen> {
     
     homePage = HomePage(name:widget.name,address:widget.address,contactNumber:widget.contactNumber,imagePath:widget.imagePath,companyId:widget.companyId);
     orderPage = OrderPage();
-    favoritePage = FavoritePage();
+    order = GetUserLocation(companyId:widget.companyId);
     profilePage = Profile();
-    pages = [homePage, orderPage, favoritePage, profilePage];
+    pages = [homePage, orderPage, order, profilePage];
 
     currentPage = homePage;
     
@@ -80,9 +81,9 @@ class _MainScreenState extends State<MainScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              Icons.favorite,
+              Icons.business_center,
             ),
-            title: Text("Favorite"),
+            title: Text("Order"),
           ),
           BottomNavigationBarItem(
             icon: Icon(
@@ -96,12 +97,12 @@ class _MainScreenState extends State<MainScreen> {
       
       floatingActionButton: FloatingActionButton (
                           
-                                    child: Icon(currentPage!=pages[1]? Icons.chat:Icons.map),
+                                    child: Icon(Icons.chat),
                                     onPressed: (){
                                       Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>currentPage!=pages[1]? Chat():GetUserLocation()
+        builder: (context) => Chat()
       ),
     );
                                     },
