@@ -40,7 +40,7 @@ class LoginPage extends StatefulWidget{
           height: MediaQuery.of(context).size.height,
           decoration: BoxDecoration(
             image: DecorationImage(
-            image: AssetImage("images/background.jpg"),
+            image: AssetImage("images/background.png"),
             fit: BoxFit.cover,
           ),
           ),
