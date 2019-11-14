@@ -13,45 +13,71 @@ class GetUserLocation extends StatefulWidget {
 }
 
 class _GetUserLocationState extends State<GetUserLocation> {
-  
+   String userId;
+   int index=0;
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Map(companyId:widget.companyId),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 0 ,
-        type: BottomNavigationBarType.fixed,
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.check_circle,
-            ),
-            title: Text("Pending"),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.check_circle,
-            ),
-            title: Text("Confirm"),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.check_circle,
-            ),
-            title: Text("On the Way"),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.check_circle,
-            ),
-            title: Text("Delivered"),
-          ),
-        ],
-      ),
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getUserId();
+        Firestore.instance
+            .collection('retailers')
+            .document(userId)
+            .get()
+            .then((DocumentSnapshot ds) {
+              setState(() {
+                index=ds['orderState'];
+              });
+          
+        });
+      }
       
-            );
-            
-          }
+      @override
+      Widget build(BuildContext context) {
+        return Scaffold(
+          body: Map(companyId:widget.companyId),
+          bottomNavigationBar: BottomNavigationBar(
+            currentIndex: index ,
+            type: BottomNavigationBarType.fixed,
+            items: <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.check_circle,
+                ),
+                title: Text("Pending"),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.check_circle,
+                ),
+                title: Text("Confirm"),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.check_circle,
+                ),
+                title: Text("On the Way"),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.check_circle,
+                ),
+                title: Text("Delivered"),
+              ),
+            ],
+          ),
+          
+                );
+                
+              }
+    
+      void getUserId() async{
+        final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+       FirebaseUser user = await _firebaseAuth.currentUser();
+       setState(() {
+         userId=user.uid;
+       });
+      }
         
           
 }
@@ -239,8 +265,8 @@ class _MapState extends State<Map> {
           void _getUserLocation() async {
             
             Firestore.instance
-            .collection('companies')
-            .document(widget.companyId)
+            .collection('retailers')
+            .document(userId)
             .snapshots().listen((data) async{
               
                
@@ -310,7 +336,7 @@ class _MapState extends State<Map> {
         .document(userId)
         .snapshots().listen((data) async{
           setState(() {
-            destination=LatLng(data.data['coord'].latitude,data.data['coord'].longitude);
+            destination=LatLng(data.data['iniCoord'].latitude,data.data['iniCoord'].longitude);
             sendRequest(destination);
           });
           
