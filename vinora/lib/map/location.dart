@@ -6,7 +6,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:vinora/requests/google_map_requests.dart';
 class GetUserLocation extends StatefulWidget {
   final String companyId;
-  GetUserLocation({Key key, @required this.companyId}): super(key: key);
+  final String id;
+  GetUserLocation({Key key, @required this.companyId,@required this.id}): super(key: key);
   @override
   _GetUserLocationState createState() => _GetUserLocationState();
   
@@ -20,9 +21,14 @@ class _GetUserLocationState extends State<GetUserLocation> {
     // TODO: implement initState
     super.initState();
     getUserId();
+        
+      }
+      
+      @override
+      Widget build(BuildContext context) {
         Firestore.instance
             .collection('retailers')
-            .document(userId)
+            .document(widget.id)
             .get()
             .then((DocumentSnapshot ds) {
               setState(() {
@@ -31,12 +37,8 @@ class _GetUserLocationState extends State<GetUserLocation> {
           
           
         });
-      }
-      
-      @override
-      Widget build(BuildContext context) {
         return Scaffold(
-          body: Map(companyId:widget.companyId),
+          body: Map(companyId:widget.companyId,id:widget.id),
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: index ,
             type: BottomNavigationBarType.fixed,
@@ -85,7 +87,8 @@ class _GetUserLocationState extends State<GetUserLocation> {
 }
 class Map extends StatefulWidget {
   final String companyId;
-  Map({Key key, @required this.companyId}): super(key: key);
+  final String id;
+  Map({Key key, @required this.companyId,@required this.id}): super(key: key);
   @override
   _MapState createState() => _MapState();
 }
@@ -268,7 +271,7 @@ class _MapState extends State<Map> {
             
             Firestore.instance
             .collection('retailers')
-            .document(userId)
+            .document(widget.id)
             .snapshots().listen((data) async{
               
                

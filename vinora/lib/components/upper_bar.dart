@@ -56,7 +56,7 @@ class UpperBar extends StatelessWidget {
                       children: <Widget>[
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text("kfdkf",
+                          child: Text("This is Royal Vintage Company.",
                               style: AppTheme.subtitle),
                         )
                       ],

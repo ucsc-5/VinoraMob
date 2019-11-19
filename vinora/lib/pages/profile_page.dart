@@ -276,12 +276,12 @@ Firestore.instance
                                                       FirebaseUser user = await _firebaseAuth.currentUser();
                                                         
                                                         final DocumentReference postRef = Firestore.instance.document('retailers/${user.uid}');
-Firestore.instance.runTransaction((Transaction tx) async {
-  DocumentSnapshot postSnapshot = await tx.get(postRef);
-  if (postSnapshot.exists) {
-    await tx.update(postRef, <String, dynamic>{'shopName': name});
-  }
-});
+                                                        Firestore.instance.runTransaction((Transaction tx) async {
+                                                          DocumentSnapshot postSnapshot = await tx.get(postRef);
+                                                          if (postSnapshot.exists) {
+                                                            await tx.update(postRef, <String, dynamic>{'shopName': name});
+                                                          }
+                                                        });
                                                               setState(() {
                                                                isLoading=false; 
                                                               });

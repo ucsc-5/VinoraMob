@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:vinora/auth_provider.dart';
 import 'package:vinora/chat/chat.dart';
 import 'package:vinora/map/location.dart';
-import 'package:vinora/map/location.dart' ;
-import 'package:vinora/pages/order_status.dart';
 import '../pages/home_page.dart';
 import '../pages/order_page.dart';
 import '../pages/profile_page.dart';
@@ -15,7 +13,8 @@ class MainScreen extends StatefulWidget {
   final String contactNumber;
   final String imagePath;
   final String companyId;
-   MainScreen({Key key,  @required this.name,@required this.address,@required this.contactNumber,@required this.imagePath,@required this.companyId}): super(key: key);
+  final String id;
+   MainScreen({Key key,  @required this.name,@required this.address,@required this.contactNumber,@required this.imagePath,@required this.companyId,@required this.id}): super(key: key);
   @override
   _MainScreenState createState() => _MainScreenState();
 
@@ -36,7 +35,7 @@ class _MainScreenState extends State<MainScreen> {
     
     homePage = HomePage(name:widget.name,address:widget.address,contactNumber:widget.contactNumber,imagePath:widget.imagePath,companyId:widget.companyId);
     orderPage = OrderPage();
-    order = GetUserLocation(companyId:widget.companyId);
+    order = GetUserLocation(companyId:widget.companyId,id:widget.id);
     profilePage = Profile();
     pages = [homePage, orderPage, order, profilePage];
 
@@ -77,7 +76,7 @@ class _MainScreenState extends State<MainScreen> {
             icon: Icon(
               Icons.shopping_cart,
             ),
-            title: Text("Orders"),
+            title: Text("Cart"),
           ),
           BottomNavigationBarItem(
             icon: Icon(

@@ -247,7 +247,7 @@ class _OrderPageState extends State<OrderPage> {
                                                                                 ),
                                                                                 child: Center(
                                                                                   child: Text(
-                                                                                    "Proceed To Checkout",
+                                                                                    "Confirm Order",
                                                                                     style: TextStyle(
                                                                                       color: Colors.white,
                                                                                       fontSize: 18.0,

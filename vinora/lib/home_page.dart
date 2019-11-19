@@ -142,7 +142,7 @@ class _HomePageState extends State<HomePage> {
                     document['state']=='1'?Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => MainScreen(name:document['companyName'],address:document['address'],contactNumber:document['contactNumber'],imagePath:document['imagePath'],companyId: document['companyId'],),
+        builder: (context) => MainScreen(name:document['companyName'],address:document['address'],contactNumber:document['contactNumber'],imagePath:document['imagePath'],companyId: document['companyId'],id:id),
       ),
     ):"";
                   },
@@ -189,34 +189,12 @@ class _HomePageState extends State<HomePage> {
                               BoxShadow(blurRadius: 7.0, color: Colors.black)
                             ])),
                                             ),
+                                            
                                             ListTile(
-                                              title: Text("My Profile"),
-                                              onTap: (){
-                                    
-                                              },
-                                            ),
-                                            ListTile(
-                                              title: Text("My Profile"),
-                                              onTap: (){
-                                    
-                                              },
-                                            ),
-                                            ListTile(
-                                              title: Text("My Profile"),
-                                              onTap: (){
-                                    
-                                              },
-                                            ),
-                                            ListTile(
-                                              title: Text("My Profile"),
-                                              onTap: (){
-                                    
-                                              },
-                                            ),
-                                            ListTile(
+                                              leading: Icon(Icons.exit_to_app),
                                               title: Text("Exit"),
                                               onTap: (){
-                                    
+                                                showAlertDialog(context);
                                               },
                                             ),
                                             ],
