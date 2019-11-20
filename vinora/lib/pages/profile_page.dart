@@ -101,7 +101,7 @@ Firestore.instance
               
           children: <Widget>[
             ClipPath(
-              child: Container(color: Colors.deepOrange.withOpacity(0.8)),
+              child: Container(color: Colors.deepPurple.withOpacity(0.8)),
               clipper: getClipper(),
             ),
             Positioned(
