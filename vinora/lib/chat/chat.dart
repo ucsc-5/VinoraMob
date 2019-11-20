@@ -56,7 +56,7 @@ class _ChatState extends State<Chat> {
     Widget build(BuildContext context) {
       return Scaffold(
         appBar: AppBar(
-          title: Text("Royal Vintage Chat") ,
+          title: Text("Chat") ,
         ),
         body: SafeArea(
 
