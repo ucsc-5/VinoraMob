@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,        
         title: 'Vinora',
         theme: ThemeData(
-          primarySwatch: Colors.blueGrey,
+          primarySwatch: Colors.deepPurple,
         ),
         home: SplashScreen1(title: 'VinoraMob'),
       ),
