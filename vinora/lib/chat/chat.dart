@@ -7,8 +7,9 @@ import 'package:dash_chat/dash_chat.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';  
 class Chat extends StatefulWidget {
-  
-  
+  String id;
+  Chat({Key key, @required this.id})
+      : super(key: key);
   @override
   _ChatState createState() => _ChatState();
 }
@@ -21,6 +22,7 @@ class _ChatState extends State<Chat> {
         setState(() {
           user.uid=user1.uid;
           user.name=user1.email;
+          
         });
        }
   @override
@@ -28,102 +30,114 @@ class _ChatState extends State<Chat> {
     user.name = "Name Loading ..";
     user.uid = Uuid().v4().toString();
     getUserId();
-    super.initState();
-    }
+    getAvatar();
+        super.initState();
+        }
+        
+        void onSend(ChatMessage message) {
+        var documentReference = Firestore.instance
+            .collection('message')
+            .document(DateTime.now().millisecondsSinceEpoch.toString());
     
-    void onSend(ChatMessage message) {
-    var documentReference = Firestore.instance
-        .collection('message')
-        .document(DateTime.now().millisecondsSinceEpoch.toString());
-
-    Firestore.instance.runTransaction((transaction) async {
-      await transaction.set(
-        documentReference,
-        message.toJson(),
-      );
-    });
-  }
-  void uploadFile() async {
-    File result = await ImagePicker.pickImage(
-      source: ImageSource.gallery,
-      imageQuality: 100,
-      maxHeight: 400,
-      maxWidth: 400,
-    );
-
-    if (result != null) {
-      String id = Uuid().v4().toString();
-
-      final StorageReference storageRef =
-          FirebaseStorage.instance.ref().child("chat_images/$id.jpg");
-
-      StorageUploadTask uploadTask = storageRef.putFile(
-        result,
-        StorageMetadata(
-          contentType: 'image/jpg',
-        ),
-      );
-      StorageTaskSnapshot download = await uploadTask.onComplete;
-
-      String url = await download.ref.getDownloadURL();
-
-      ChatMessage message = ChatMessage(text: "", user: user, image: url);
-
-      var documentReference = Firestore.instance
-          .collection('message')
-          .document(DateTime.now().millisecondsSinceEpoch.toString());
-
-      Firestore.instance.runTransaction((transaction) async {
-        await transaction.set(
-          documentReference,
-          message.toJson(),
+        Firestore.instance.runTransaction((transaction) async {
+          await transaction.set(
+            documentReference,
+            message.toJson(),
+          );
+        });
+      }
+      void uploadFile() async {
+        File result = await ImagePicker.pickImage(
+          source: ImageSource.gallery,
+          imageQuality: 100,
+          maxHeight: 400,
+          maxWidth: 400,
         );
-      });
-    }
-  }
-  
-    @override
-    Widget build(BuildContext context) {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text("Chat") ,
-        ),
-        body:  StreamBuilder(
-        stream: Firestore.instance.collection('message').snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                    Theme.of(context).primaryColor),
-              ),
+    
+        if (result != null) {
+          String id = Uuid().v4().toString();
+    
+          final StorageReference storageRef =
+              FirebaseStorage.instance.ref().child("chat_images/$id.jpg");
+    
+          StorageUploadTask uploadTask = storageRef.putFile(
+            result,
+            StorageMetadata(
+              contentType: 'image/jpg',
+            ),
+          );
+          StorageTaskSnapshot download = await uploadTask.onComplete;
+    
+          String url = await download.ref.getDownloadURL();
+    
+          ChatMessage message = ChatMessage(text: "", user: user, image: url);
+    
+          var documentReference = Firestore.instance
+              .collection('message')
+              .document(DateTime.now().millisecondsSinceEpoch.toString());
+    
+          Firestore.instance.runTransaction((transaction) async {
+            await transaction.set(
+              documentReference,
+              message.toJson(),
             );
-          } else {
-            List<DocumentSnapshot> items = snapshot.data.documents;
-            var messages =
-                items.map((i) => ChatMessage.fromJson(i.data)).toList();
-            return DashChat(
-              user: user,
-              messages: messages,
-              inputDecoration: InputDecoration(
-                hintText: "Message here...",
-                border: InputBorder.none,
-              ),
-              scrollToBottom: false,
-              onSend: onSend,
-              
-              trailing: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.photo),
-                  onPressed: uploadFile,
-                )
-              ],
-            );
-          }
-        },
-      ),
-      );
-    }
+          });
+        }
+      }
+      
+        @override
+        Widget build(BuildContext context) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text("Chat") ,
+            ),
+            body:  StreamBuilder(
+            stream: Firestore.instance.collection('message').snapshots(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                        Theme.of(context).primaryColor),
+                  ),
+                );
+              } else {
+                List<DocumentSnapshot> items = snapshot.data.documents;
+                var messages =
+                    items.map((i) => ChatMessage.fromJson(i.data)).toList();
+                return DashChat(
+                  user: user,
+                  messages: messages,
+                  inputDecoration: InputDecoration(
+                    hintText: "Message here...",
+                    border: InputBorder.none,
+                  ),
+                  scrollToBottom: false,
+                  onSend: onSend,
+                  
+                  trailing: <Widget>[
+                    IconButton(
+                      icon: Icon(Icons.photo),
+                      onPressed: uploadFile,
+                    )
+                  ],
+                );
+              }
+            },
+          ),
+          );
+        }
+    
+      void getAvatar() {
+        Firestore.instance
+        .collection('retailers')
+        .document(widget.id)
+        .get()
+        .then((DocumentSnapshot ds) {
+          user.avatar=ds['url'];
+          user.name=ds['shopName'];
+    });
+      }
   
     
 }
