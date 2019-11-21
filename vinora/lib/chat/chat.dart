@@ -8,7 +8,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';  
 class Chat extends StatefulWidget {
   String id;
-  Chat({Key key, @required this.id})
+  String companyId;
+  Chat({Key key, @required this.id,@required this.companyId})
       : super(key: key);
   @override
   _ChatState createState() => _ChatState();
