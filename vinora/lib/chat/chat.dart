@@ -63,6 +63,14 @@ class _ChatState extends State<Chat> {
           if (postSnapshot.exists) {
             await tx.update(documentReference, ds.data);
           }
+        }).then((onValue){
+          final DocumentReference postRef = Firestore.instance.document('retailers/${widget.id}');
+          Firestore.instance.runTransaction((Transaction tx) async {
+            DocumentSnapshot postSnapshot = await tx.get(postRef);
+            if (postSnapshot.exists) {
+              await tx.update(postRef, <String, dynamic>{'chatState':  1,'chatTime':DateTime.now().millisecondsSinceEpoch.toString()});
+            }
+});
         });
         
     });
@@ -125,7 +133,15 @@ class _ChatState extends State<Chat> {
           if (postSnapshot.exists) {
             await tx.update(documentReference, ds.data);
           }
-        });
+        }).then((onValue){
+          final DocumentReference postRef = Firestore.instance.document('retailers/${widget.id}');
+          Firestore.instance.runTransaction((Transaction tx) async {
+            DocumentSnapshot postSnapshot = await tx.get(postRef);
+            if (postSnapshot.exists) {
+              await tx.update(postRef, <String, dynamic>{'chatState':  1,'chatTime':DateTime.now().millisecondsSinceEpoch.toString()});
+            }
+});
+        })  ;
     });
         });
         
