@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,7 +8,9 @@ import 'dart:io';
 import 'package:dash_chat/dash_chat.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';  
+enum ListItems { delete }
 class Chat extends StatefulWidget {
+  int count=0;
   String id;
   String companyId;
   Chat({Key key, @required this.id,@required this.companyId})
@@ -16,6 +20,7 @@ class Chat extends StatefulWidget {
 }
 
 class _ChatState extends State<Chat> {
+  
   ChatUser user = ChatUser();
   void getUserId() async{
       final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -26,6 +31,7 @@ class _ChatState extends State<Chat> {
           
         });
        }
+       
   @override
   void initState() {
     user.name = "Name Loading ..";
@@ -152,10 +158,47 @@ class _ChatState extends State<Chat> {
       
         @override
         Widget build(BuildContext context) {
+          
           return Scaffold(
             appBar: AppBar(
               title: Text("Chat") ,
+              actions: <Widget>[
+                
+                PopupMenuButton(
+                  onSelected: (ListItems result) { 
+                  CollectionReference reference = Firestore.instance
+                  .collection('message');
+                  StreamSubscription<QuerySnapshot> streamSub =reference.where("retailerId", isEqualTo: widget.id)
+                  .snapshots()
+                  .listen((data) {
+                      
+                      data.documents.forEach((doc) {
+                        Firestore.instance.document("message/${doc.documentID}").delete();
+                        data.documents.remove(doc);}
+                      );
+                  }
+                      );
+                      streamSub.cancel();
+                      
+                      
+                                },
+                  itemBuilder: (BuildContext context) => <PopupMenuEntry<ListItems>>[
+
+    const PopupMenuItem<ListItems>(
+
+      height: 35,
+      value: ListItems.delete,
+      child: Padding(
+        padding: EdgeInsets.only(top:10),
+        child: Text('Clear Chat'),
+      ),
+    ),
+    
+  ],
+                )
+              ],
             ),
+            
             body:  StreamBuilder(
             stream: Firestore.instance.collection('message').where('retailerId',isEqualTo: widget.id).snapshots(),
             builder: (context, snapshot) {

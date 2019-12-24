@@ -109,18 +109,13 @@ class _OrderPageState extends State<OrderPage> {
                                                               DocumentSnapshot postSnapshot = await tx.get(postRef);
                                                               if (postSnapshot.exists) {
                                                                await tx.update(postRef, <String, dynamic>{'quantity': postSnapshot.data['quantity'] + postSnapshot1.data['quantity']});
-                                                               
-                                                               
                                                               }
-                                                            });
-                                                                
+                                                            }); 
                                                               }
                                                             }).then((t){
                                                               Firestore.instance.document("cart"+'/${document.documentID}').delete();
                                                               snapshot.data.documents.remove(document);
-                                                            });
-                                                           
-                                                            },
+                                                            });},
                                               ); 
                                                
                                             }).toList(),
