@@ -123,6 +123,7 @@ class _OrderPageState extends State<OrderPage> {
                                 void getCurrentUserId() async {
                                   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
                                   FirebaseUser user = await _firebaseAuth.currentUser().then((onValue){
+                                    
                                     getSubTotal(onValue.uid);
                                             Firestore.instance
                                             .collection('retailers')
@@ -131,6 +132,7 @@ class _OrderPageState extends State<OrderPage> {
                                             .then((DocumentSnapshot ds) {
                                              setState(() {
                                                shopName=ds.data['shopName'];
+                                               userId=onValue.uid;
                                              });
                                           
                                             
