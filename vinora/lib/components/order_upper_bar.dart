@@ -42,15 +42,7 @@ class OrdedrUpperBar extends StatelessWidget {
                         )
                       ],
                     ),
-                    Row(
-                      children: <Widget>[
-                       Text("Available - Kg :", style: AppTheme.subHeadline),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Text(countity.toString(), style: AppTheme.subHeadline),
-                        )
-                      ],
-                    ),
+                    
                     Divider(),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,

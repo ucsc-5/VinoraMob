@@ -135,24 +135,14 @@ class _OrderingState extends State<Ordering>{
                                         if(validateAndSave()){
                                                             
                                                             try{
-                                                      if(widget.countity.toDouble()>=double.parse(_reqQuantity)&&widget.countity.toDouble()>=0&&double.parse(availabelCount)>=0 ){
+                                                     
                                                         final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
                                                         FirebaseUser user = await _firebaseAuth.currentUser();
-                                                          
-                                                    final DocumentReference postRef = Firestore.instance.document('items/${widget.itemId}');
+                                                    
                                                     Firestore.instance.runTransaction((Transaction tx) async {
-                                                      DocumentSnapshot postSnapshot = await tx.get(postRef);
-                                                      if (postSnapshot.exists&&postSnapshot.data['quantity']>=0) {
-                                                        await tx.update(postRef, <String, dynamic>{'quantity': postSnapshot.data['quantity'] - double.parse(_reqQuantity)});
-                                                        setState(() {
-                                                          availabelCount= (postSnapshot.data['quantity'] - double.parse(_reqQuantity)).toString();
-                                                          //subTotal=postSnapshot.data['subTotal'] +(widget.unitPrice* double.parse(_reqQuantity));
-                                                        });
-                                                        
-    
-                                                        Firestore.instance.collection('cart').document()
+                                                      Firestore.instance.collection('cart').document()
                                                     .setData({ 'itemId': widget.itemId, 'quantity': double.parse(_reqQuantity),'companyId':widget.companyId,'retailerId':user.uid,'itemName':widget.name,'itemImagePath':widget.imagePath,'unitPrice':widget.unitPrice,'total':(widget.unitPrice* double.parse(_reqQuantity)),'description':widget.description,'state':widget.state,'type':widget.type,'brand':widget.brand});
-                                                      }
+                                                      
                                                     });
                                                     Toast.show("Your Item is added to Cart", context, duration: 4, gravity:  Toast.BOTTOM,backgroundColor: Colors.green);
                                                     Navigator.push(
@@ -161,9 +151,7 @@ class _OrderingState extends State<Ordering>{
                                                       builder: (context) => MainScreen(name:widget.companyName,address:widget.address,contactNumber:widget.companyContact,imagePath:widget.companyImage,companyId:widget.companyId,id:id),
                                                     ),
                                                   );
-                                                              }else{
-                                                                 Toast.show("There is no Enough Countity in the Stock.", context, duration: 4, gravity:  Toast.BOTTOM,backgroundColor: Colors.red);
-                                                              }
+                                                              
                                                             
                                                        
                                                         }catch(e){
@@ -177,15 +165,15 @@ class _OrderingState extends State<Ordering>{
     
       }
       bool validateAndSave() {
-                                                    final form =formKey.currentState;
-                                                    if(form.validate()){
-                                                      form.save();
-                                                      return true;
-                                                    }else{
-                                                      return false;
-                                                    }
-                                                                        
-                                                      }
+        final form =formKey.currentState;
+        if(form.validate()){
+          form.save();
+          return true;
+        }else{
+          return false;
+        }
+                            
+          }
     
       void getCurrentUser() async {
         FirebaseAuth auth=FirebaseAuth.instance;
