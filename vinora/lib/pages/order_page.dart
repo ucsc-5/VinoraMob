@@ -349,7 +349,7 @@ class _OrderPageState extends State<OrderPage> {
                                                                               void addOrder(){
                                                                                
                                                                                 DocumentReference ref= Firestore.instance.collection('orders').document();
-                                                                            ref.setData({ 'subTotal':subTotal,'createDate':new DateTime.now(),'retailerId':userId,'companyId':companyId,'shopName':shopName,'state':-1 }).then((onValue){
+                                                                            ref.setData({ 'total':subTotal,'createDate':new DateTime.now(),'retailerId':userId,'companyId':companyId,'shopName':shopName,'state':-1 }).then((onValue){
                                                                               
                                                                               var x=Firestore.instance
                                                                           .collection('cart')
