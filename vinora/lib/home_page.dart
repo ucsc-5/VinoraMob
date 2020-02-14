@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vinora/companies/notReg.dart';
 import 'package:vinora/theme.dart';
 import 'auth.dart';
 import 'auth_provider.dart';
@@ -42,7 +43,7 @@ class _HomePageState extends State<HomePage> {
     
       return user != null ? user.uid : null;
   }
-  
+  int currentTab = 0;
   Future<String> getUserId() async{
     final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
     
@@ -113,7 +114,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
               appBar: AppBar(
-                title: Text('Vinora'),
+                title: Text('Vinora Mob'),
                 actions: <Widget>[
                   IconButton(
                     icon: Icon(Icons.exit_to_app),
@@ -122,8 +123,32 @@ class _HomePageState extends State<HomePage> {
                   )
                 ],
               ),
-              body:StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('companies').snapshots(),
+              bottomNavigationBar: BottomNavigationBar(
+            currentIndex: currentTab,
+            onTap: (index) {
+              setState(() {
+                currentTab = index;
+              });
+            },
+            type: BottomNavigationBarType.fixed,
+            items: <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.account_balance,
+                ),
+                title: Text("Registered Companies"),
+              ),
+              
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.business,
+                ),
+                title: Text("Other Companies"),
+              ),
+            ],
+          ),
+              body:currentTab!=0? StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance.collection('retailers/${id}/notRegCompanies').snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError)
           return new 
@@ -139,12 +164,12 @@ class _HomePageState extends State<HomePage> {
                 return new ListTile(
                   contentPadding:EdgeInsets.only(top: 10,bottom: 10,left: 10),
                   onTap: (){
-                    document['state']=='1'?Navigator.push(
+                   Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => MainScreen(name:document['companyName'],address:document['address'],contactNumber:document['contactNumber'],imagePath:document['imagePath'],companyId: document['companyId'],id:id),
+        builder: (context) => MainScreen1(name:document['companyName'],address:document['address'],contactNumber:document['contactNumber'],imagePath:document['imagePath'],companyId: document['companyId'],id:id),
       ),
-    ):"";
+    );
                   },
                   leading: CircleAvatar(
                     radius: 30,
@@ -166,7 +191,52 @@ class _HomePageState extends State<HomePage> {
             );
         }
       },
-    ),    
+    ): StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance.collection('retailers/${id}/registeredCompanies').snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasError)
+          return new 
+          Center(
+            child: Text('Error: ${snapshot.error}'),
+          )
+          ;
+        switch (snapshot.connectionState) {
+          case ConnectionState.waiting: return new Text('Loading...');
+          default:
+            return new ListView(
+              children: snapshot.data.documents.map((DocumentSnapshot document) {
+                
+                return new ListTile(
+                  contentPadding:EdgeInsets.only(top: 10,bottom: 10,left: 10),
+                  onTap: (){
+                  Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MainScreen(name:document['companyName'],address:document['address'],contactNumber:document['contactNumber'],imagePath:document['imagePath'],companyId: document['companyId'],id:id),
+      ),
+    );
+                  },
+                  leading: CircleAvatar(
+                    radius: 30,
+                                backgroundImage: NetworkImage(
+                                   document['imagePath'] ),
+                                backgroundColor:
+                                    Colors.transparent,
+                              ),
+                  title: new Padding(
+                    padding: EdgeInsets.only(left:10),
+                    child:Text(document['companyName'],style: AppTheme.headline,) 
+                  ) ,
+                  subtitle: new Padding(
+                    padding: EdgeInsets.only(left:10),
+                    child:Text(document['address'],style: AppTheme.title,) ,
+                  ) ,
+                );
+              }).toList(),
+            );
+        }
+      },
+    ),   
                     drawer: Drawer(child: ListView(
                                             children: <Widget>[
                                               UserAccountsDrawerHeader(
@@ -200,6 +270,7 @@ class _HomePageState extends State<HomePage> {
                                             ],
                                           ),
                                             ),
+                                            
                                             
                                           
                                             
