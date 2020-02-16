@@ -346,8 +346,17 @@ class _OrderPageState extends State<OrderPage> {
                                                                                                                                     }
                                                                                                                                     
                                                                             
-                                                                              void addOrder(){
-                                                                               
+                                                                              void addOrder(){                                                                             
+
+                                                                              final DocumentReference postRef2 = Firestore.instance.document('retailers/$userId');
+                                                                              
+                                                                              Firestore.instance.runTransaction((Transaction tx) async {
+                                                                                DocumentSnapshot postSnapshot2 = await tx.get(postRef2);
+                                                                                if (postSnapshot2.exists) {
+                                                                                  await tx.update(postRef2, <String, dynamic>{'orderState': 0});
+                                                                                }
+                                                                              });
+
                                                                                 DocumentReference ref= Firestore.instance.collection('orders').document();
                                                                             ref.setData({ 'total':subTotal,'createDate':new DateTime.now(),'retailerId':userId,'companyId':companyId,'shopName':shopName,'state':-1 }).then((onValue){
                                                                               

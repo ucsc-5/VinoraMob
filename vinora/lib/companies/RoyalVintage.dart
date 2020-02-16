@@ -29,7 +29,7 @@ class _MainScreenState extends State<MainScreen> {
 
   List<Widget> pages;
   Widget currentPage;
-
+  Widget page;
   @override
   void initState() {
     
@@ -49,8 +49,6 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final BaseAuth auth = AuthProvider.of(context).auth;
-    final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
     
     return Scaffold(
       
@@ -62,6 +60,7 @@ class _MainScreenState extends State<MainScreen> {
           setState(() {
             currentTab = index;
             currentPage = pages[index];
+            page=null;
           });
         },
         type: BottomNavigationBarType.fixed,
@@ -84,6 +83,7 @@ class _MainScreenState extends State<MainScreen> {
             ),
             title: Text("Order"),
           ),
+          
           BottomNavigationBarItem(
             icon: Icon(
               Icons.person,

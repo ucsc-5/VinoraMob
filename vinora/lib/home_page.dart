@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:toast/toast.dart';
 import 'package:vinora/companies/notReg.dart';
 import 'package:vinora/theme.dart';
 import 'auth.dart';
@@ -27,6 +29,13 @@ class _HomePageState extends State<HomePage> {
       print(e);
     }
   }
+  String page=null;
+  String item=null;
+  String orderId=null;
+  String comment=null;
+  String returnGoods;
+  String companyName;
+  String companyId;
   Future<String> currentUser() async {
     final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
     FirebaseUser user = await _firebaseAuth.currentUser();
@@ -128,6 +137,8 @@ class _HomePageState extends State<HomePage> {
             onTap: (index) {
               setState(() {
                 currentTab = index;
+                page=null;
+                item=null;
               });
             },
             type: BottomNavigationBarType.fixed,
@@ -147,7 +158,102 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
-              body:currentTab!=0? StreamBuilder<QuerySnapshot>(
+              body:page!=null?StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance.collection('orders').where('retailerId',isEqualTo: id).where('state',isGreaterThanOrEqualTo:0).snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasError)
+          return new 
+          Center(
+            child: Text('Error: ${snapshot.error}'),
+          )
+          ;
+        switch (snapshot.connectionState) {
+          case ConnectionState.waiting: return new Text('Loading...');
+          default:
+            return new ListView(
+              children: snapshot.data.documents.map((DocumentSnapshot document) {
+                companyName=document['companyName'];
+                companyId=document['companyId'];
+                return new ListTile(
+                  contentPadding:EdgeInsets.only(top: 10,bottom: 10,left: 10),
+                  onTap: (){
+                    setState(() {
+                      orderId=document.documentID;
+                    page=null;
+                    item='1';
+                    });
+
+                            },
+                            onLongPress: (){
+                              orderId=document.documentID;
+                    confirmOrder(context);
+                  },
+                  leading:  CircleAvatar(
+                                                child: Icon(Icons.add_shopping_cart),
+                                              ),
+                  title: new Padding(
+                    padding: EdgeInsets.only(left:10),
+                    child:Text(document['companyName'],style: AppTheme.headline,) 
+                  ) ,
+                  subtitle: new Padding(
+                    padding: EdgeInsets.only(left:10),
+                    child:Text("Order Date :"+document['year'].toString()+"-"+document['month'].toString()+"-"+document['date'].toString()+"\n"+"Rs:"+document['total'].toString()+"\n",style: AppTheme.subtitle,) ,
+                  ) ,
+                  trailing: new Padding(
+                    padding: EdgeInsets.only(left:10,right: 10),
+                    child: document['state'].toString()=='1'? Text("Confirmed", style: TextStyle(color: Colors.green,fontSize: 16,fontWeight: FontWeight.bold),):Text("Pending",style: TextStyle(color: Colors.amber,fontSize: 16,fontWeight: FontWeight.bold)),
+                  ),
+                );
+              }).toList(),
+            );
+        }
+      },
+    ):item!=null&&orderId!=null?StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance.collection('orders/$orderId/items').snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasError)
+          return new 
+          Center(
+            child: Text('Error: ${snapshot.error}'),
+          )
+          ;
+        switch (snapshot.connectionState) {
+          case ConnectionState.waiting: return new Text('Loading...');
+          default:
+            return new ListView(
+              children: snapshot.data.documents.map((DocumentSnapshot document) {
+                return new ListTile(
+                  contentPadding:EdgeInsets.only(top: 10,bottom: 10,left: 10),
+                  onTap: (){
+                   editName(context,document);
+                  },
+                  
+                  leading: CircleAvatar(
+                    radius: 30,
+                                backgroundImage: NetworkImage(
+                                   document['itemImagePath'] ),
+                                backgroundColor:
+                                    Colors.transparent,
+                              ),
+                  title: new Padding(
+                    padding: EdgeInsets.only(left:10),
+                    child:Text(document['itemName'],style: AppTheme.headline,) 
+                  ) ,
+                  subtitle: new Padding(
+                    padding: EdgeInsets.only(left:10),
+                    child:Text("Brand : "+document['brand']+"\nQuantity : "+document['quantity'].toString()+" "+document['type'],style: AppTheme.subtitle,) ,
+                  ) ,
+                  trailing: new Padding(
+                    padding: EdgeInsets.only(left:10,right: 10),
+                    child:Text("Rs : "+document['total'].toString(),style: AppTheme.title,) ,
+                  ),
+                );
+              }).toList(),
+            );
+        }
+      },
+    )
+              :currentTab!=0? StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance.collection('retailers/${id}/notRegCompanies').snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError)
@@ -259,7 +365,18 @@ class _HomePageState extends State<HomePage> {
                               BoxShadow(blurRadius: 7.0, color: Colors.black)
                             ])),
                                             ),
-                                            
+                                            ListTile(
+                                              leading: Icon(Icons.add_shopping_cart),
+                                              title: Text("Return Goods and Comments"),
+                                              onTap: (){
+
+                                                setState(() {
+                                                  page='1';
+                                                  item=null;
+                                                });
+                                                Navigator.pop(context);
+                                              },
+                                            ),
                                             ListTile(
                                               leading: Icon(Icons.exit_to_app),
                                               title: Text("Exit"),
@@ -275,5 +392,143 @@ class _HomePageState extends State<HomePage> {
                                           
                                             
                                         );
+                                        
   }
+
+Future<bool> confirmOrder(BuildContext context) async {
+                                      return showDialog(
+                                          context: context,
+                                          barrierDismissible: false,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: Text('Confirm the Order', style: TextStyle(fontSize: 16.0)),
+                                              content: Container(
+                                                height:50.0,
+                                                width: 50.0,
+                                                
+                                              ),
+                                              actions: <Widget>[
+                                                FlatButton(
+                                                  child: Text('No'),
+                                                  textColor: Colors.blue,
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                    
+                                                  },
+                                                ),
+                                                FlatButton(
+                                                  child: Text('Confirm'),
+                                                  textColor: Colors.blue,
+                                                  onPressed: () {
+                                                    confirmOrder1();
+                                                                                                       
+                                                                                                          
+                                                                                                         
+                                                                                                                           
+                                                                                                                              
+                                                                                                        Navigator.of(context).pop(); 
+                                                                                                                         
+                                                                                                                        },
+                                                                                                                      )
+                                                                                                                    ],
+                                                                                                                  );
+                                                                                                                });
+                                                                                                          }
+                                                    
+                                                    
+                                                      Future<bool> editName(BuildContext context,DocumentSnapshot document) async {
+                                                                                          return showDialog(
+                                                                                              context: context,
+                                                                                              barrierDismissible: false,
+                                                                                              builder: (BuildContext context) {
+                                                                                                return AlertDialog(
+                                                                                                  title: Text('Add Your Comment', style: TextStyle(fontSize: 16.0)),
+                                                                                                  content: Container(
+                                                                                                    height: 120.0,
+                                                                                                    width: 100.0,
+                                                                                                    child: Column(
+                                                                                                      children: <Widget>[
+                                                                                                        TextField(
+                                                                                                          decoration: InputDecoration(
+                                                                                                              labelText: 'Comment',
+                                                                                                              labelStyle: TextStyle(
+                                                                                                                  fontSize: 14,
+                                                                                                                  fontFamily: 'Montserrat',
+                                                                                                                  fontWeight: FontWeight.bold)),
+                                                                                                          onChanged: (value) {
+                                                                                                            comment=value;
+                                                                                                          },
+                                                                                                        ),
+                                                                                                        TextField(
+                                                                                                          decoration: InputDecoration(
+                                                                                                              labelText: 'Quantity of Return Goods (Kg)',
+                                                                                                              labelStyle: TextStyle(
+                                                                                                                  fontSize: 14,
+                                                                                                                  fontFamily: 'Montserrat',
+                                                                                                                  fontWeight: FontWeight.bold)),
+                                                                                                          onChanged: (value) {
+                                                                                                            returnGoods=value;
+                                                                                                          },
+                                                                                                        ),
+                                                                                                      ],
+                                                                                                    ),
+                                                                                                  ),
+                                                                                                  actions: <Widget>[
+                                                                                                    FlatButton(
+                                                                                                      child: Text('Exit'),
+                                                                                                      textColor: Colors.blue,
+                                                                                                      onPressed: () {
+                                                                                                        Navigator.of(context).pop();
+                                                                                                        
+                                                                                                      },
+                                                                                                    ),
+                                                                                                    FlatButton(
+                                                                                                      child: Text('Send'),
+                                                                                                      textColor: Colors.blue,
+                                                                                                      onPressed: () {
+                                                                                                      
+                                                                                                       
+                                                                                                          
+                                                                                                          addReturnGoods(name,document);
+                                                                                                                           
+                                                                                                                              
+                                                                                                        Navigator.of(context).pop(); 
+                                                                                                                         
+                                                                                                                        },
+                                                                                                                      )
+                                                                                                                    ],
+                                                                                                                  );
+                                                                                                                });
+                                                                                                          }
+                                                                                                        
+                                                                                                          Future<bool> addReturnGoods(String name,DocumentSnapshot document) async{
+                                                                                                            DateTime now = DateTime.now();
+                                                                                                            Firestore.instance.collection('returnGoods').document()
+                                                                                                      .setData({ 'orderId': orderId,
+                                                                                                      'companyName':companyName,
+                                                                                                      'companyId':companyId, 
+                                                                                                      'retailerId': id,
+                                                                                                      'items':document.data,
+                                                                                                      'comment':comment,
+                                                                                                      'returnGoodsQuantity':double.parse(returnGoods),
+                                                                                                      'time':now  });
+                                                                                                            
+                                                                                                        Toast.show("Successfuly Send", context, duration: 4, gravity:  Toast.BOTTOM,backgroundColor: Colors.green);    
+                                                                                                            
+                                                                                                                  return true;
+                                                                                                            
+                                                                                                          }
+                                                                                                           void confirmOrder1() async {
+                                                                                                             
+                                                      final DocumentReference postRef = Firestore.instance.document('orders/$orderId');
+                                          Firestore.instance.runTransaction((Transaction tx) async {
+                                            DocumentSnapshot postSnapshot = await tx.get(postRef);
+                                            if (postSnapshot.exists) {
+                                              await tx.update(postRef, <String, dynamic>{'state':  1});
+                                            }
+                                          });
+                                          Toast.show("Successfuly Confirmed", context, duration: 4, gravity:  Toast.BOTTOM,backgroundColor: Colors.green);
 }
+                                                    }
+                                                    
+                                                   

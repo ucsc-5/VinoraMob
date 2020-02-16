@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 abstract class BaseAuth {
   
@@ -22,18 +23,22 @@ class Auth implements BaseAuth {
     
     return user.uid;
   }
-
+    
+  
   @override
   Future<String> createUserWithEmailAndPassword(String name,String email, String password,String mobile,String address) async {
-    
+      
       AuthResult result= await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
     final FirebaseUser user =result.user;
+    LatLng p=new LatLng(6.053519, 80.220978);
     Firestore.instance.collection('retailers').document(user.uid)
   .setData({ 
     'shopName': name,
     'email':email,
     'address':address,
     'contactNumber':mobile,
+    'iniCoord':p,
+    'orderState':0,
     'url':"https://www.stickpng.com/assets/images/585e4bf3cb11b227491c339a.png",
     'state':'0',
      });

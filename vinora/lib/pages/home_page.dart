@@ -31,11 +31,16 @@ class _HomePageState extends State<HomePage>{
                 width: double.maxFinite,
                 height: double.maxFinite,
                 child: Stack(
+                  
                   children: <Widget>[
-                    Image.network(
+                    
+                    Container(
+                      width: double.maxFinite,
+                      child: Image.network(
                         widget.imagePath),
+                    ),
                     Positioned(
-                      top: 155,
+                      top: 255,
                       child: Container(
                         width: MediaQuery.of(context).size.width,
                         decoration: BoxDecoration(
@@ -54,7 +59,7 @@ class _HomePageState extends State<HomePage>{
                               });
                             }),
                             Container(
-                              height:300,
+                              height:170,
                               child:StreamBuilder<QuerySnapshot>(
       stream: Firestore.instance.collection('items').where("companyId", isEqualTo: widget.companyId).snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
