@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dash_chat/dash_chat.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:toast/toast.dart';
@@ -18,11 +19,16 @@ class _OrderPageState extends State<OrderPage> {
   String availableCount;
   String companyId;
   String shopName;
+  int date;
+  int month;
+  int year;
   @override
   void initState() {
     subTotal=0;
     getCurrentUserId();
-     
+    date=new DateTime.now().day;
+    month=new DateTime.now().month;
+    year=new DateTime.now().year;
     
   }
  
@@ -45,7 +51,7 @@ class _OrderPageState extends State<OrderPage> {
           body:Column(
             children: <Widget>[
               Container(
-            height: 290,
+            height: 260,
             child: Padding(
             padding: EdgeInsets.all(10),
             child: StreamBuilder<QuerySnapshot>(
@@ -358,20 +364,43 @@ class _OrderPageState extends State<OrderPage> {
                                                                               });
 
                                                                                 DocumentReference ref= Firestore.instance.collection('orders').document();
-                                                                            ref.setData({ 'total':subTotal,'createDate':new DateTime.now(),'retailerId':userId,'companyId':companyId,'shopName':shopName,'state':-1 }).then((onValue){
-                                                                              
+                                                                            ref.setData({ 'total':subTotal,
+                                                                            'createDate':new DateTime.now().toString(),
+                                                                            'retailerId':userId,
+                                                                            'companyId':companyId,
+                                                                            'shopName':shopName,
+                                                                            'state':-1,
+                                                                            'saleRepId':"",
+                                                                            'tempTotal':0,
+                                                                            'stockManagerId':"",
+                                                                            'date':date,
+                                                                            'month':month,
+                                                                            'year':year,
+                                                                            'encDate':year*10000+month*100+date,
+                                                                            'saleRepAccept':0,
+                                                                            'companyName':'Royal Vintage' }).then((onValue){
+                                                                            int count=1;
                                                                               var x=Firestore.instance
                                                                           .collection('cart')
                                                                           .where("retailerId", isEqualTo: userId);
                                                                           x.snapshots()
                                                                           .forEach((data) {
-                                                                              data.documents.forEach((doc) { 
-                                                                              Firestore.instance.collection('orders/${ref.documentID}/items').document()
+                                                                            count=data.documents.length;
+                                                                           
+                                                                                data.documents.forEach((doc) { 
+                                                                               if(data.documents.length==count){
+                                                                                 Firestore.instance.collection('orders/${ref.documentID}/items').document()
                                                                             .setData (doc.data).then((onValue) {
                                                                                Firestore.instance.document("cart/${doc.documentID}").delete();
                                                                                data.documents.remove(doc);
                                                                             });
-                                                                          });});
+                                                                               }
+                                                                                 
+                                                                                count=0;
+                                                                             
+                                                                          });
+                                                                             
+                                                                              });
                                                                               
                                                                             }).then((onValue){
                                                                               setState(() {

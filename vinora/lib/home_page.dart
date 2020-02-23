@@ -56,11 +56,11 @@ class _HomePageState extends State<HomePage> {
   Future<String> getUserId() async{
     final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
     
-    FirebaseUser user = await _firebaseAuth.currentUser();
-    id=user.uid;
-    Firestore.instance
+    FirebaseUser user = await _firebaseAuth.currentUser().then((onValue){
+      id=onValue.uid;
+      Firestore.instance
         .collection('retailers')
-        .document(id)
+        .document(onValue.uid)
         .get()
         .then((DocumentSnapshot ds) {
           setState(() {
@@ -72,6 +72,9 @@ class _HomePageState extends State<HomePage> {
           });
       // use ds as a snapshot
     });
+    });
+    
+    
     
     
     return user != null ? user.uid : null;
@@ -159,7 +162,7 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
               body:page!=null?StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('orders').where('retailerId',isEqualTo: id).where('state',isGreaterThanOrEqualTo:0).snapshots(),
+      stream: Firestore.instance.collection('orders').where('retailerId',isEqualTo: id).snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError)
           return new 
@@ -444,7 +447,7 @@ Future<bool> confirmOrder(BuildContext context) async {
                                                                                                 return AlertDialog(
                                                                                                   title: Text('Add Your Comment', style: TextStyle(fontSize: 16.0)),
                                                                                                   content: Container(
-                                                                                                    height: 120.0,
+                                                                                                    height: 140.0,
                                                                                                     width: 100.0,
                                                                                                     child: Column(
                                                                                                       children: <Widget>[

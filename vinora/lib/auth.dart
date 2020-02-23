@@ -27,23 +27,48 @@ class Auth implements BaseAuth {
   
   @override
   Future<String> createUserWithEmailAndPassword(String name,String email, String password,String mobile,String address) async {
-      
-      AuthResult result= await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
-    final FirebaseUser user =result.user;
-    LatLng p=new LatLng(6.053519, 80.220978);
-    Firestore.instance.collection('retailers').document(user.uid)
+    String user1=" "; 
+    
+      AuthResult result= await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password).then((onValue){
+        user1=onValue.user.uid;
+          Firestore.instance.collection('retailers').document(onValue.user.uid)
   .setData({ 
     'shopName': name,
     'email':email,
     'address':address,
     'contactNumber':mobile,
-    'iniCoord':p,
+    'iniCoord':new GeoPoint(6.053519, 80.220978),
     'orderState':0,
     'url':"https://www.stickpng.com/assets/images/585e4bf3cb11b227491c339a.png",
-    'state':'0',
+    'state':1,
+    'retailerId':user1
      });
-    
-    return user.uid;
+      Firestore.instance
+    .collection('companies')
+    .snapshots()
+    .listen((data) =>
+        data.documents.forEach((doc) {
+          Firestore.instance.collection('companies/${doc.documentID}/notRegRetailers').document(onValue.user.uid)
+          .setData({ 
+            'shopName': name,
+            'email':email,
+            'address':address,
+            'contactNumber':mobile,
+            'iniCoord':new GeoPoint(6.053519, 80.220978),
+            'orderState':0,
+            'url':"https://www.stickpng.com/assets/images/585e4bf3cb11b227491c339a.png",
+            'state':1,
+            'retailerId':user1
+            });
+
+            Firestore.instance.collection('retailers/$user1/notRegCompanies').document(doc.documentID)
+          .setData(doc.data);
+        }
+          
+        )); 
+      });
+ 
+    return user1;
     
     
   }
